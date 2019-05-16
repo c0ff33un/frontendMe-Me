@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  ScrollView,
-  KeyboardAvoidingView,
 } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { Provider as PaperProvider } from 'react-native-paper';
 
+const colorTextInput = "#FF6B35";
+
 export default class UserInput extends Component {
   state = {
+    user: '',
     pass: '',
-    user: ''
   };
 
   render() {
@@ -22,6 +22,8 @@ export default class UserInput extends Component {
           label="Email o nombre de usuario"
           style={ {margin: 8} }
           value={this.state.user}
+          selectionColor= { colorTextInput }
+          underlineColorAndroid = {colorTextInput}
           onChangeText={user => this.setState({ user })}
         />
         <TextInput
@@ -32,10 +34,10 @@ export default class UserInput extends Component {
           value={this.state.pass}
           onChangeText={pass => this.setState({ pass })}
         />
-        <Button style={ {marginTop: 4, paddingLeft: 8} } mode="text" onPress={() => console.log('Pressed')}>
-          <Text style={ {fontSize: 8} }>¿Olvidaste tú contraseña?</Text>
-        </Button>
-        <Button style={ {margin: 8} } mode="outlined" onPress={() => console.log('Pressed')}>
+        <View style = {{alignSelf: 'flex-end', marginBottom: 20}}>
+          <Text style={ {fontSize: 10} }>¿Olvidaste tú contraseña?</Text>
+        </View>
+        <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" onPress={() => console.log('Pressed')}>
           Iniciar Sesión
         </Button>
       </View>

@@ -6,9 +6,9 @@ import Login from './src/screens/login/containers/Login'
 export default class App extends React.Component {
   render() {
     return (
-      <PaperProvider>
+      //<PaperProvider>
         <Login />
-      </PaperProvider>
+      //</PaperProvider>
     );
   }
 }
