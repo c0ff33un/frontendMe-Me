@@ -4,20 +4,23 @@ import { Text, View, SafeAreaView, Platform, StyleSheet, Image } from 'react-nat
 
 function Header(props) {
   return (
-    <View>
-      <SafeAreaView style={styles.safeArea}>
-        <Image
-          source={require('../../../../assets/logo/logo_black.png')}
+    <View style={styles.container}>
+        <Image style={styles.image}
+          source={require('../../../../assets/logo_black.png')}
         />
-      </SafeAreaView>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    paddingTop: Platform.OS === 'android' ? 25 : 0,
+  container: {
+    flex: 0,
+    paddingTop: 25,
+    backgroundColor: 'transparent'
+  },
+  image: {
+    resizeMode: 'center',
+    alignSelf: 'center'
   }
 })
 export default Header;
