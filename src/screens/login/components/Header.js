@@ -6,7 +6,7 @@ function Header(props) {
   return (
     <View style={styles.container}>
         <Image style={styles.image}
-          source={require('../../../../assets/logo_black.png')}
+          source={require('../../../../assets/logo/logo_black.png')}
         />
     </View>
   )
