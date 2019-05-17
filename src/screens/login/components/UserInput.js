@@ -17,15 +17,15 @@ export default class UserInput extends Component {
   render() {
     return (
       <View>
-        <TextInput 
-          mode="outlined"
-          label="Email o nombre de usuario"
-          style={ {margin: 8} }
-          value={this.state.user}
-          selectionColor= "#FF6B35"
-          underlineColorAndroid = {colorTextInput}
-          onChangeText={user => this.setState({ user })}
-        />
+          <TextInput
+            mode="outlined"
+            label="Email o nombre de usuario"
+            style={ {margin: 8} }
+            value={this.state.user}
+            selectionColor= { colorTextInput }
+            underlineColorAndroid = {colorTextInput}
+            onChangeText={user => this.setState({ user })}
+          />
         <TextInput
           mode="outlined"
           label="Contraseña"
@@ -37,7 +37,7 @@ export default class UserInput extends Component {
         <View style = {{alignSelf: 'flex-end', marginBottom: 20}}>
           <Text style={ {fontSize: 10} }>¿Olvidaste tú contraseña?</Text>
         </View>
-        <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" onPress={() => console.log('Pressed')}>
+        <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" title="Iniciar Sesión" onPress={() => console.log('Pressed')}>
           Iniciar Sesión
         </Button>
       </View>

@@ -4,7 +4,7 @@ import {
   View,
 } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
-// import { Provider as PaperProvider } from 'react-native-paper';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 const colorTextInput = "#FF6B35";
 
@@ -17,28 +17,53 @@ export default class UserInput extends Component {
   render() {
     return (
       <View>
-        <TextInput 
-          mode="outlined"
-          label="Email o nombre de usuario"
-          style={ {margin: 8} }
-          value={this.state.user}
-          selectionColor= "#FF6B35"
-          underlineColorAndroid = {colorTextInput}
-          onChangeText={user => this.setState({ user })}
-        />
-        <TextInput
-          mode="outlined"
-          label="Contraseña"
-          secureTextEntry={true}
-          style={ {margin: 8, marginTop: 2} }
-          value={this.state.pass}
-          onChangeText={pass => this.setState({ pass })}
-        />
-        <View style = {{alignSelf: 'flex-end', marginBottom: 20}}>
-          <Text style={ {fontSize: 10} }>¿Olvidaste tú contraseña?</Text>
-        </View>
-        <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" onPress={() => console.log('Pressed')}>
-          Iniciar Sesión
+          <View style={{marginLeft: 8}}>
+            <Text>Ingresa tu nombre de usuario</Text>
+          </View>
+          <TextInput
+            mode="outlined"
+            style={ {margin: 8} }
+            value={this.state.user}
+            selectionColor= { colorTextInput }
+            underlineColorAndroid = {colorTextInput}
+            onChangeText={user => this.setState({ user })}
+          />
+          <View style={{marginLeft: 8}}>
+            <Text>Ingresa tu correo electrónico</Text>
+          </View>
+          <TextInput
+            mode="outlined"
+            style={ {margin: 8} }
+            value={this.state.user}
+            selectionColor= { colorTextInput }
+            underlineColorAndroid = {colorTextInput}
+            onChangeText={user => this.setState({ user })}
+          />
+          <View style={{marginLeft: 8}}>
+            <Text>Ingresa tu contraseña</Text>
+          </View>
+          <TextInput
+            mode="outlined"
+            style={ {margin: 8} }
+            value={this.state.user}
+            selectionColor= { colorTextInput }
+            underlineColorAndroid = {colorTextInput}
+            onChangeText={user => this.setState({ user })}
+          />
+          <View style={{marginLeft: 8}}>
+            <Text>Ingresa nuevamente tu contraseña</Text>
+          </View>
+          <TextInput
+            mode="outlined"
+            style={ {margin: 8} }
+            value={this.state.user}
+            selectionColor= { colorTextInput }
+            underlineColorAndroid = {colorTextInput}
+            onChangeText={user => this.setState({ user })}
+          />
+        
+        <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" title="Registrarse" onPress={() => console.log(this)}>
+          Registrarse
         </Button>
       </View>
     )
