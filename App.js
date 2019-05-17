@@ -16,20 +16,18 @@ export default class App extends React.Component {
   }
 }
 
-const AppNavigator = StackNavigator({
-  LoginScreen: { screen: Login},
-  SignUpScreen: { screen: SignUp},
-  RecoveryScreen: {screen: RecoverPass},
-  FeedScreen: {screen: Feed},
-  SettingScreen: {screen: Settings},
-  PostScreen: {screen: Post},
-  EditorScreen: {screen: Editor},
-  SwiperScreen: {screen: Swiper},
-  FinderScreen: {screen: Finder},
-  NotificationsScreen: {screen: Notifications},
-
-
-})
+// const AppNavigator = StackNavigator({
+//   LoginScreen: { screen: Login},
+//   SignUpScreen: { screen: SignUp},
+  // RecoveryScreen: {screen: RecoverPass},
+  // FeedScreen: {screen: Feed},
+  // SettingScreen: {screen: Settings},
+  // PostScreen: {screen: Post},
+  // EditorScreen: {screen: Editor},
+  // SwiperScreen: {screen: Swiper},
+  // FinderScreen: {screen: Finder},
+  // NotificationsScreen: {screen: Notifications},
+// })
 
 const styles = StyleSheet.create({
   container: {
