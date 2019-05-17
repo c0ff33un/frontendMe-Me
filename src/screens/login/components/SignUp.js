@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
-import { Text, View } from 'react-native'
+import { Text, View, Link } from 'react-native'
+import {Button} from 'react-native-paper'
 import { SocialIcon } from 'react-native-elements'
 
-
 export default class SignUp extends Component {
-
-  
   render(){
     return (
       <View>
@@ -22,11 +20,11 @@ export default class SignUp extends Component {
           button
           type='google-plus-official'
         />
-        <View style = {{alignSelf: 'flex-end'}}>
-          <Text>
+        <Button
+          title="Sign Up"
+          onPress={() => this.props.navigation.navigate('SignUpScreen')}>
             Sign Up
-          </Text>
-        </View>
+        </Button>
       </View>
     );
   }

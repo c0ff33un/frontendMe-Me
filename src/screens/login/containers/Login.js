@@ -10,7 +10,7 @@ class Login extends Component {
         <View style={styles.container}>
             <Header />
             <UserInput />
-            <SignUp /> 
+            <SignUp navigation={this.props.navigation} /> 
         </View>
     )
   }
