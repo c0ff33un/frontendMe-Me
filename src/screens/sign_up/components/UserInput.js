@@ -9,17 +9,35 @@ import SignUp from '../containers/SignUp';
 
 const colorTextInput = "#FF6B35";
 
+function randomStringGenerator(){
+  var length           = Math.floor(Math.random() * 45);
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+function hasher(pass){
+  var sha256 = require('js-sha256').sha256;
+  return sha256(pass);
+}
+
 function signUp(username, pass, age) {
+  var rand = randomStringGenerator();
+  var hashPass = hasher(rand + pass);
   fetch('https://meemperrapi.herokuapp.com/users', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      handler: username,
+      handle: username,
       age: age,
-      pass: pass,
-      password_salt: pass 
+      pass: hashPass,
+      password_salt: rand 
     })
   })
 }
@@ -47,9 +65,10 @@ export default class UserInput extends Component {
             onChangeText={user => this.setState({ user })}
           />
           <View style={{marginLeft: 8}}>
-            <Text>Ingresa tu edad</Text>
+            <Text>Ingresa tu edad</Text>  
           </View>
-          <TextInput
+          {/* Se debe utilizar date picker */}
+          <TextInput 
             mode="outlined"
             style={ {margin: 8} }
             value={this.state.age}
@@ -81,19 +100,8 @@ export default class UserInput extends Component {
           />
         
         <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" title="Registrarse" 
-          onPress = {() => fetch('https://meemperrapi.herokuapp.com/users', {
-                            method: 'POST',
-                            headers: {
-                              'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                              handle: this.state.user,
-                              age: this.state.age,
-                              pass: this.state.pass,
-                              password_salt: this.state.pass 
-                            })
-                          }
-          )}> Registrarse </Button>
+          onPress = {() => signUp(this.state.user, this.state.pass, this.state.age)}
+        > Registrarse </Button>
       </View>
     )
   }
