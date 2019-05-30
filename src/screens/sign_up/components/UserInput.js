@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
+  ScrollView,
 } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { Provider as PaperProvider } from 'react-native-paper';
-import SignUp from '../containers/SignUp';
+import {Crypt, keyManager, RSA} from 'hybrid-crypto-js';
+import DatePicker from 'react-native-datepicker';
 
 const colorTextInput = "#FF6B35";
 
@@ -25,21 +27,40 @@ function hasher(pass){
   return sha256(pass);
 }
 
-function signUp(username, pass, age) {
-  var rand = randomStringGenerator();
-  var hashPass = hasher(rand + pass);
-  fetch('https://meemperrapi.herokuapp.com/users', {
+function encrypt(message){
+  var publicKey = "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCQAh4sqSvbF5HoULNGHSvaGrr\nGqMIYBxCEdSq3A8DL2t+Jz+50oeo2OJqNy+KErCn/UPEvk9Nm+I9mqaSrz1009Jl\nf6dukknLt2KJJjyVfaU6xmfXKSpxcya1jmdFRjVmvyMJyFocGmigT0ofkbDU6cXZ\nSvMZJp6tF345KMbuDQIDAQAB\n-----END PUBLIC KEY-----\n";
+  // Basic initialization
+  var crypt = new Crypt();
+  var rsa = new RSA();
+
+  // Increase amount of entropy
+  var entropy = "05bd98a0bd886dd3";
+  var crypt = new Crypt({entropy: entropy});
+
+  // Encryption with one public RSA key
+  var encrypted = crypt.encrypt(publicKey, message);
+  return encrypted;
+}
+
+function signUp(username, email, birthday, pass) {
+  //var cryptoPass = encrypt(pass);
+  console.log(birthday);
+  var ans = fetch('https://meemperrapi.herokuapp.com/signup', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      handle: username,
-      age: age,
-      pass: hashPass,
-      password_salt: rand 
+      user:{
+        handle: username,
+        email: email,
+        birthday: birthday,
+        password: pass
+      }
     })
   })
+
+  console.log(ans);
 }
 
 export default class UserInput extends Component {
@@ -47,7 +68,9 @@ export default class UserInput extends Component {
     user: '',
     pass: '',
     repass: '',
-    age: ''
+    email: '',
+    birthday: '' //YYYY-MM-DD  14 <= X <= 100
+
   };
 
   render() {
@@ -65,16 +88,41 @@ export default class UserInput extends Component {
             onChangeText={user => this.setState({ user })}
           />
           <View style={{marginLeft: 8}}>
-            <Text>Ingresa tu edad</Text>  
+            <Text>Ingresa tu fecha de nacimiento</Text>  
           </View>
           {/* Se debe utilizar date picker */}
-          <TextInput 
+          <DatePicker
+          style={{width: 400, margin: 8}}
+          date={this.state.birthday}
+          mode="date"
+          placeholder="select date"
+          format="YYYY-MM-DD"
+          minDate="1919-05-01"
+          confirmBtnText="Confirmar"
+          cancelBtnText="Cancel"
+          customStyles={{
+            dateIcon: {
+              width:0,
+              height:0,
+            },
+            dateInput: {
+              height: 30,
+              width: 400 
+            }
+            // ... You can check the source to find the other keys.
+          }}
+          onDateChange={(birthday) => {this.setState({birthday: birthday})}}
+        />
+          <View style={{marginLeft: 8}}>
+            <Text>Ingresa tu email</Text>
+          </View>
+          <TextInput
             mode="outlined"
             style={ {margin: 8} }
-            value={this.state.age}
+            value={this.state.email}
             selectionColor= { colorTextInput }
             underlineColorAndroid = {colorTextInput}
-            onChangeText={age => this.setState({ age })}
+            onChangeText={email => this.setState({ email })}
           />
           <View style={{marginLeft: 8}}>
             <Text>Ingresa tu contraseña</Text>
@@ -100,7 +148,7 @@ export default class UserInput extends Component {
           />
         
         <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" title="Registrarse" 
-          onPress = {() => signUp(this.state.user, this.state.pass, this.state.age)}
+          onPress = {() => signUp(this.state.user, this.state.email, this.state.birthday, this.state.pass)}
         > Registrarse </Button>
       </View>
     )
