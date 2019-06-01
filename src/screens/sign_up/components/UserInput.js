@@ -58,7 +58,9 @@ function signUp(username, email, birthday, pass) {
         password: pass
       }
     })
-  })
+  }).then(res => res.json())
+  .catch(error => console.error('Error:', error))
+  .then(response => console.log('Success:', response));
 
   console.log(ans);
 }
