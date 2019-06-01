@@ -14,6 +14,23 @@ export default class UserInput extends Component {
     pass: '',
   };
 
+  login = () => {
+    var ans = fetch('https://meemperrapi.herokuapp.com/login', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        user:{
+                          email: this.state.user,
+                          password: this.state.pass
+                        }
+                      })
+              }).then(res => res.headers.map["authorization"])
+                .catch(error => console.error('Error:', error))
+                .then(response => console.log('Success:', response));
+  }
+
   render() {
     return (
       <View>
@@ -37,7 +54,7 @@ export default class UserInput extends Component {
         <View style = {{alignSelf: 'flex-end', marginBottom: 20}}>
           <Text style={ {fontSize: 10} }>¿Olvidaste tú contraseña?</Text>
         </View>
-        <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" title="Iniciar Sesión" onPress={() => console.log('Pressed')}>
+        <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" title="Iniciar Sesión" onPress={this.login}>
           Iniciar Sesión
         </Button>
       </View>

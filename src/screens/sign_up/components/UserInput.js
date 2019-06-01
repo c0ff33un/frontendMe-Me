@@ -44,7 +44,6 @@ function encrypt(message){
 
 function signUp(username, email, birthday, pass) {
   //var cryptoPass = encrypt(pass);
-  console.log(birthday);
   var ans = fetch('https://meemperrapi.herokuapp.com/signup', {
     method: 'POST',
     headers: {
