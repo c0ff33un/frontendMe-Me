@@ -9,7 +9,7 @@ class Login extends Component {
     return(
         <View style={styles.container}>
             <Header />
-            <UserInput />
+            <UserInput navigation={this.props.navigation} />
             <SignUp navigation={this.props.navigation} /> 
         </View>
     )
@@ -18,7 +18,7 @@ class Login extends Component {
 
 const styles = StyleSheet.create({
   container:{
-    justifyContent: 'space-between',
+    flex: 1
   }
 });
 

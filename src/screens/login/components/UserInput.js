@@ -26,14 +26,21 @@ export default class UserInput extends Component {
                           password: this.state.pass
                         }
                       })
-              }).then(res => res.headers.map["authorization"])
+              }).then(response => {
+                  if (response.status == 401) {
+                    this.props.navigation.navigate("ValidateEmailScreen")
+                  } else if (response.status == 201) {
+                    this.props.navigation.navigate("FeedScreen")
+                  }
+                })
+                //.then(res => res.headers.map["authorization"])
                 .catch(error => console.error('Error:', error))
-                .then(response => console.log('Success:', response));
+                //.then(response => console.log('Success:', response));
   }
 
   render() {
     return (
-      <View>
+      <View style={{flex: 2, justifyContent: 'center'}}>
           <TextInput
             mode="outlined"
             label="Email o nombre de usuario"
@@ -51,7 +58,7 @@ export default class UserInput extends Component {
           value={this.state.pass}
           onChangeText={pass => this.setState({ pass })}
         />
-        <View style = {{alignSelf: 'flex-end', marginBottom: 20}}>
+        <View style = {{alignSelf: 'flex-end', marginBottom: 20, marginRight: 9}}>
           <Text style={ {fontSize: 10} }>¿Olvidaste tú contraseña?</Text>
         </View>
         <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" title="Iniciar Sesión" onPress={this.login}>
@@ -61,3 +68,4 @@ export default class UserInput extends Component {
     )
   }
 }
+

@@ -7,8 +7,8 @@ class SignUp extends Component {
   render() {
     return(
         <ScrollView style={styles.container}>
-            <Header />
-            <UserInput /> 
+            <Header/>
+            <UserInput navigation={this.props.navigation}/> 
         </ScrollView>
     )
   }
