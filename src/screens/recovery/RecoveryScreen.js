@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 
-export default class Swiper extends Component {
+class RecoveryScreen extends Component {
   render() {
     return (
       <View>
-        <Text> Swiper.js </Text>
+        <Text> Recovery.js </Text>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({})
+
+export default RecoveryScreen

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Text, View, Button, Image, Dimensions } from 'react-native'
 import { ImagePicker } from 'expo';
  
-export default class UploadMeme extends Component {
+class UploadMemeScreen extends Component {
     state = {
         image: null,
         base64: null
@@ -63,3 +63,4 @@ export default class UploadMeme extends Component {
     }
 }
 
+export default UploadMemeScreen

@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 
-export default class Settings extends Component {
+class NotificationScreen extends Component {
   render() {
     return (
       <View>
-        <Text> Settings.js </Text>
+        <Text> Notification.js </Text>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({})
+
+export default NotificationScreen

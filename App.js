@@ -1,12 +1,22 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Provider as PaperProvider } from 'react-native-paper';
-import AppContainer from './src/routing/AppContainer.js'
+import React, { Component, Fragment } from 'react'
+import { StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Provider as PaperProvider } from 'react-native-paper'
+import AuthenticatedAppContainer from './src/routing/AuthenticatedAppContainer'
+import UnathenticatedAppContainer from './src/routing/UnathenticatedAppContainer'
 
+authenticated = true;
 
 class App extends Component {
   render() {
-    return <AppContainer />;
+    return(
+      <Fragment>
+        {authenticated ? (
+          <AuthenticatedAppContainer style={styles.container}/>
+        ) : (
+          <UnauthenticatedAppContainer style={styles.container}/>
+        )}
+      </Fragment>
+    );
   }
 }
 

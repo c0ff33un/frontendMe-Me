@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import { Image, Text, StyleSheet, View, FlatList } from 'react-native'
 
-export default class Feed extends Component {
+class FeedScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -70,3 +70,4 @@ export default class Feed extends Component {
   }
 }
 
+export default FeedScreen;
