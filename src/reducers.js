@@ -3,14 +3,20 @@ import {
   LOGIN,
   LOGOUT,
   SET_MEME_FILTER,
+  SET_UPLOAD_MEME,
+  TOGGLE_UPLOADING_MEME,
   MemeFilters
 } from './actions'
 
 const { HOT } = MemeFilters
 
+
+// not used only used as reference of what initial state should be and what function should look like
 const initialState = {
   memeFilter: MemeFilters.HOT,
-  jwt: null
+  jwt: null,
+  uploadScreenImage: null,
+  uploadingMeme: false
 }
 
 function memeFilter(state = HOT, action) {
@@ -33,10 +39,30 @@ function jwt(state = null, action) {
   }
 }
 
+function uploadScreenImage(state = null, action) {
+  switch (action.type) {
+    case SET_UPLOAD_MEME:
+      return state.image
+    default:
+      return state
+  }
+}
 
-const memeApp = combineReducers({
+function uploadingMeme(state = false, action) {
+  switch (action.type) {
+    case TOGGLE_UPLOADING_MEME:
+      return !state
+    default:
+      return state
+  }
+}
+
+
+const memeAppReducer = combineReducers({
   memeFilter,
-  jwt
+  jwt,
+  uploadScreenImage,
+  uploadingMeme,
 })
 
-export default memeApp
+export default memeAppReducer;

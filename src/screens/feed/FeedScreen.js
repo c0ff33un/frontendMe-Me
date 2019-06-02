@@ -56,14 +56,15 @@ class FeedScreen extends Component {
 
   render() {
     return(
-      <View style={{flex: 1}}>
-        <Text>Hola</Text>
+      <View style={{flex: 1}} >
         <FlatList
           data={this.state.data}
           numColumns={3}
           renderItem={(elem) => {
             return this.renderImage(elem.item.image)}
           }
+
+
         />
       </View>
     );
