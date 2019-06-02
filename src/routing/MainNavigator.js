@@ -1,4 +1,4 @@
-import {createStackNavigator} from 'react-navigation';
+import {createStackNavigator,createAppContainer} from 'react-navigation';
 
 import Login from '../screens/login/containers/Login'
 import SignUp from '../screens/sign_up/containers/SignUp';
@@ -10,8 +10,9 @@ import Editor from '../screens/editor/containers/Editor';
 import Swiper from '../screens/swiper/containers/Swiper';
 import Finder from '../screens/finder/containers/Finder';
 import Notification from '../screens/notification/containers/Notification';
+import UploadMeme from '../screens/upload_meme/containers/UploadMeme';
 
-const MainNavigator = createStackNavigator({
+const StackNavigator = createStackNavigator({
   LoginScreen: { screen: Login},
   SignUpScreen: { screen: SignUp},
   RecoveryScreen: {screen: Recovery},
@@ -23,5 +24,7 @@ const MainNavigator = createStackNavigator({
   FinderScreen: {screen: Finder},
   NotificationsScreen: {screen: Notification},
 });
+
+const MainNavigator = createAppContainer(StackNavigator);
 
 export default MainNavigator;
