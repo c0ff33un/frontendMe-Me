@@ -53,15 +53,6 @@ export default class UserInput extends Component {
   render() {
     return (
       <View style={{flex: 2, justifyContent: 'center'}}>
-          <TextInput
-            mode="outlined"
-            label="Email o nombre de usuario"
-            style={ {margin: 8} }
-            value={this.state.user}
-            selectionColor= { colorTextInput }
-            underlineColorAndroid = {colorTextInput}
-            onChangeText={user => this.setState({ user })}
-          />
         <TextInput
           mode="outlined"
           label="Email o nombre de usuario"
