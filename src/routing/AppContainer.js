@@ -1,5 +1,4 @@
-import {createStackNavigator} from 'react-navigation';
-
+import { createAppContainer, createStackNavigator } from 'react-navigation';
 import Login from '../screens/login/containers/Login'
 import SignUp from '../screens/sign_up/containers/SignUp';
 import Recovery from '../screens/recovery/containers/Recovery';
@@ -10,12 +9,13 @@ import Editor from '../screens/editor/containers/Editor';
 import Swiper from '../screens/swiper/containers/Swiper';
 import Finder from '../screens/finder/containers/Finder';
 import Notification from '../screens/notification/containers/Notification';
+// you can also import from @react-navigation/native
 
-const MainNavigator = createStackNavigator({
+const AppNavigator = createStackNavigator({
+  FeedScreen: {screen: Feed},
   LoginScreen: { screen: Login},
   SignUpScreen: { screen: SignUp},
   RecoveryScreen: {screen: Recovery},
-  FeedScreen: {screen: Feed},
   SettingScreen: {screen: Settings},
   PostScreen: {screen: Post},
   EditorScreen: {screen: Editor},
@@ -24,4 +24,8 @@ const MainNavigator = createStackNavigator({
   NotificationsScreen: {screen: Notification},
 });
 
-export default MainNavigator;
+const AppContainer = createAppContainer(AppNavigator);
+
+// Now AppContainer is the main component for React to render
+
+export default AppContainer;
