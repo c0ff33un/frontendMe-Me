@@ -6,7 +6,7 @@ import { SocialIcon } from 'react-native-elements'
 export default class SignUp extends Component {
   render(){
     return (
-      <View>
+      <View style={{flex: 2, justifyContent: 'center'}}>
         <View style = {{alignSelf: 'center', marginTop: 8, marginBottom: 8}}>
           <Text>Or</Text>
         </View>

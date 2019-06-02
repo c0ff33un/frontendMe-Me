@@ -67,30 +67,33 @@ function encrypt(message){
   return encrypted;
 }
 
-function signUp(username, email, birthday, pass) {
-  //var cryptoPass = encrypt(pass);
-
-  var ans = fetch('https://meemperrapi.herokuapp.com/signup', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      user:{
-        handle: username,
-        email: email,
-        birthday: birthday,
-        password: pass
-      }
-    })
-  }).then(res => res.json())
-  .catch(error => console.error('Error:', error))
-  .then(response => console.log('Success:', response));
-
-  console.log(ans);
-}
 
 export default class UserInput extends Component {
+  signUp = () => {
+    //var cryptoPass = encrypt(pass);
+    var ans = fetch('https://meemperrapi.herokuapp.com/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user:{
+          handle: this.state.user,
+          email: this.state.email,
+          birthday: this.state.birthday,
+          password: this.state.pass
+        }
+      })
+    }).then(response => {
+      if(response.ok){
+        console.log('Success', response)
+        this.props.navigation.navigate('ValidateEmailScreen');
+      } else {
+        console.log('Error:', response)
+      }
+    })
+  }
+
   state = {
     user: '',
     pass: '',
@@ -279,8 +282,7 @@ export default class UserInput extends Component {
           null }
         
         <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" title="Registrarse" 
-          disabled = {this.state.disabled}
-          onPress = {() => signUp(this.state.user, this.state.email, this.state.birthday, this.state.pass)}
+          onPress = {this.signUp}
         > Registrarse </Button>
         </View>
     )

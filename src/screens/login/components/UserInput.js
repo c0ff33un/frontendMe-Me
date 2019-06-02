@@ -26,9 +26,42 @@ export default class UserInput extends Component {
     error: false
   };
 
+  login = () => {
+    var ans = fetch('https://meemperrapi.herokuapp.com/login', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        user:{
+                          email: this.state.user,
+                          password: this.state.pass
+                        }
+                      })
+              }).then(response => {
+                  if (response.status == 401) {
+                    this.props.navigation.navigate("ValidateEmailScreen")
+                  } else if (response.status == 201) {
+                    this.props.navigation.navigate("FeedScreen")
+                  }
+                })
+                //.then(res => res.headers.map["authorization"])
+                .catch(error => console.error('Error:', error))
+                //.then(response => console.log('Success:', response));
+  }
+
   render() {
     return (
-      <View>
+      <View style={{flex: 2, justifyContent: 'center'}}>
+          <TextInput
+            mode="outlined"
+            label="Email o nombre de usuario"
+            style={ {margin: 8} }
+            value={this.state.user}
+            selectionColor= { colorTextInput }
+            underlineColorAndroid = {colorTextInput}
+            onChangeText={user => this.setState({ user })}
+          />
         <TextInput
           mode="outlined"
           label="Email o nombre de usuario"
@@ -48,13 +81,14 @@ export default class UserInput extends Component {
           value={this.state.pass}
           onChangeText={pass => this.setState({ pass })}
         />
-        <View style = {{alignSelf: 'flex-end', marginBottom: 20}}>
+        <View style = {{alignSelf: 'flex-end', marginBottom: 20, marginRight: 9}}>
           <Text style={ {fontSize: 10} }>¿Olvidaste tú contraseña?</Text>
         </View>
-        <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" title="Iniciar Sesión" onPress={() => console.log('Pressed')}>
+        <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" title="Iniciar Sesión" onPress={this.login}>
           Iniciar Sesión
         </Button>
       </View>
     )
   }
 }
+
