@@ -39,8 +39,12 @@ export default class UserInput extends Component {
                         }
                       })
               }).then(response => {
+                // console.log(response)
                   if (response.status == 401) {
-                    this.props.navigation.navigate("ValidateEmail")
+                    if(JSON.parse(response._bodyText).error == "You need to sign in or sign up before continuing.")
+                      console.log("")
+                    else
+                      this.props.navigation.navigate("ValidateEmail")
                   } else if (response.status == 201) {
                     this.props.navigation.navigate("Feed")
                   }
