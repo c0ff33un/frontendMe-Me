@@ -15,7 +15,6 @@ function Header(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 0,
-    paddingTop: 25,
     backgroundColor: 'transparent'
   },
   image: {

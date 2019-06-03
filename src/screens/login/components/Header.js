@@ -14,9 +14,9 @@ function Header(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0,
-    paddingTop: 25,
-    backgroundColor: 'transparent'
+    flex: 2,
+    marginTop: 20,
+    justifyContent: 'center'
   },
   image: {
     resizeMode: 'center',
