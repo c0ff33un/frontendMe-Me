@@ -1,37 +1,30 @@
+import React from 'react'
 import { createAppContainer, createDrawerNavigator } from 'react-navigation'
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs'
 
 import FeedScreen from '../screens/feed/FeedScreen'
 import UploadMemeScreen from '../screens/upload_meme/UploadMemeScreen'
-/*
-import Recovery from '../screens/recovery/containers/Recovery';
-import Feed from '../screens/feed/containers/Feed';
-import Settings from '../screens/settings/containers/Settings';
-import Post from '../screens/post/containers/Post';
-import Editor from '../screens/editor/containers/Editor';
-import Swiper from '../screens/swiper/containers/Swiper';
-import Finder from '../screens/finder/containers/Finder';
-import Notification from '../screens/notification/containers/Notification';
+import SettingsScreen from '../screens/settings/SettingsScreen'
 
-const MyDrawerNavigator = createDrawerNavigator(
-  {
-    Feed: {
-      screen: FeedScreen 
-    },
-    Upload: {
-      screen: UploadMemeScreen
-    }
-  },
-  {
-    initialRouteName: 'Feed'
-  }
-);
-*/
+import Icon from 'react-native-vector-icons/Ionicons'
 
 const MyBottomTabNavigator = createMaterialBottomTabNavigator(
   {
-    Feed: { screen: FeedScreen },
-    Upload: { screen: UploadMemeScreen},
+    Feed: { screen: FeedScreen,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) => ( <Icon name="md-search" color={tintColor} size={24} /> )
+      }
+    },
+    Upload: { screen: UploadMemeScreen,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) => ( <Icon name="md-add" color={tintColor} size={24} /> )
+      }
+    },
+    Settings: { screen: SettingsScreen,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) => ( <Icon name="md-settings" color={tintColor} size={24} /> ) 
+      }
+    },
   },
   {
     initialRouteName: 'Feed',
