@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 
-export default class Feed extends Component {
+class FinderScreen extends Component {
   render() {
     return (
       <View>
-        <Text> Feed.js </Text>
+        <Text> FinderScreen.js </Text>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({})
+
+export default FinderScreen

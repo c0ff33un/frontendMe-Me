@@ -40,9 +40,9 @@ export default class UserInput extends Component {
                       })
               }).then(response => {
                   if (response.status == 401) {
-                    this.props.navigation.navigate("ValidateEmailScreen")
+                    this.props.navigation.navigate("ValidateEmail")
                   } else if (response.status == 201) {
-                    this.props.navigation.navigate("FeedScreen")
+                    this.props.navigation.navigate("Feed")
                   }
                 })
                 //.then(res => res.headers.map["authorization"])

@@ -85,9 +85,10 @@ export default class UserInput extends Component {
         }
       })
     }).then(response => {
+      console
       if(response.ok){
         console.log('Success', response)
-        this.props.navigation.navigate('ValidateEmailScreen');
+        this.props.navigation.navigate('ValidateEmail');
       } else {
         console.log('Error:', response)
       }

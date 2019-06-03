@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 
-export default class Editor extends Component {
+class EditorScreen extends Component {
   render() {
     return (
       <View>
@@ -12,3 +12,5 @@ export default class Editor extends Component {
 }
 
 const styles = StyleSheet.create({})
+
+export default EditorScreen

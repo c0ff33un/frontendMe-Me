@@ -22,7 +22,7 @@ export default class SignUp extends Component {
         />
         <Button
           title="Sign Up"
-          onPress={() => this.props.navigation.navigate('SignUpScreen')}>
+          onPress={() => this.props.navigation.navigate('SignUp')}>
             Sign Up
         </Button>
       </View>

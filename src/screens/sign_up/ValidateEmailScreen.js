@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { Text, View, Image, StyleSheet } from 'react-native'
 
-export default class ValidateEmail extends Component {
+class ValidateEmailScreen extends Component {
     render() {
         return (
             <View style={styles.container}>
                 <Image style={{width: 400, height: 450, alignSelf: "center"}}
-                        resizeMode="contain" source={require('../../../../assets/gifs/gif_validate_email.gif')} />
+                        resizeMode="contain" source={require('../../../assets/gifs/gif_validate_email.gif')} />
 
                 <Text style={styles.text}>¡Nuestros minions te han enviado un correo! {"\n\n"} Revisalo para poder avanzar</Text>
                 
@@ -25,3 +25,4 @@ const styles = StyleSheet.create({
     },
   });
   
+export default ValidateEmailScreen;

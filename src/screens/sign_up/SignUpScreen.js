@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { ScrollView, View, StyleSheet } from 'react-native'
-import UserInput from '../components/UserInput';
-import Header from '../components/Header';
+import UserInput from './components/UserInput';
+import Header from './components/Header';
 
-class SignUp extends Component {
+class SignUpScreen extends Component {
   render() {
     return(
         <ScrollView style={styles.container}>
@@ -19,4 +19,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default SignUp;
+export default SignUpScreen;
