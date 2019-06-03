@@ -26,7 +26,7 @@ class FeedScreen extends Component {
 
   makeRemoteRequest = () => {
     const { page } = this.state;
-    const url = `https://meemperrapi.herokuapp.com/momazos/best?page=${page}&per_page=12`;
+    const url = `https://meemperrapi.herokuapp.com/momazos/best?page=${page}&per_page=6`;
     //const url = 'https://meemperrapi.herokuapp.com/pictures';
     setTimeout(() => {
       console.log('Loading Images');
@@ -88,14 +88,14 @@ class FeedScreen extends Component {
     return(
       <FlatList
         data={this.state.data}
-        numColumns={3}
+        numColumns={2}
         renderItem={(elem) => {
           return this.renderImage(elem.item.image)}
         }
         refreshing={this.state.refreshing}
         onRefresh={this.handleRefresh}
         onEndReached={this.handleLoadMore}
-        onEndTreshold={100}
+        onEndTreshold={0}
       />
     );
   }

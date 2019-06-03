@@ -8,7 +8,7 @@ import {
   MemeFilters
 } from './actions'
 
-const { HOT } = MemeFilters
+const { HOT } = MemeFilters;
 
 
 // not used only used as reference of what initial state should be and what function should look like
@@ -31,6 +31,8 @@ function memeFilter(state = HOT, action) {
 function jwt(state = null, action) {
   switch (action.type) {
     case LOGIN:
+      const { jwt } = action.payload;
+      return 
       //todo
     case LOGOUT:
       return null

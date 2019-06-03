@@ -7,7 +7,6 @@ import { connect } from "react-redux";
 
 class LoginScreen extends Component {
   render() {
-    console.log("Login", this.props);
     return (
       <ScrollView style={styles.container}>
         <Header />

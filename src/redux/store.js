@@ -1,6 +1,5 @@
 import { createStore } from "redux";
-import sessions from "./reducers/sessions";
+import { addLogin } from './actions'
+import rootReducer from "./reducers";
 
-const store = createStore(sessions, {});
-
-export default store;
+export default createStore(rootReducer);

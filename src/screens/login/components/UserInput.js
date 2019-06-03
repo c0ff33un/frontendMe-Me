@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import { connect } from "react-redux";
+import { addLogin } from '../../../redux/actions'
 
 const colorTextInput = "#FF6B35";
 
@@ -27,11 +28,8 @@ class UserInput extends Component {
     error: false
   };
 
-  addSession = jwt => {
-    this.props.dispatch({ type: "SET_SESSION_USER", jwt: jwt });
-  };
-
-  login = () => {
+  handleLogin = () => {
+    console.log( 'here' )
     var ans = fetch("https://meemperrapi.herokuapp.com/login", {
       method: "POST",
       headers: {
@@ -44,22 +42,26 @@ class UserInput extends Component {
         }
       })
     })
-      .then(response => {
-        var jwt = response.headers.map.authorization;
-
-        if (response.status == 401) {
-          this.props.navigation.navigate("ValidateEmail");
-        } else if (response.status == 201) {
-          this.addSession(jwt);
-          this.props.navigation.navigate("Feed");
-        }
-      })
-      //.then(res => res.headers.map["authorization"])
-      .catch(error => console.error("Error:", error));
-    //.then(response => console.log('Success:', response));
+    .then(response => {
+      const jwt = response.headers.map.authorization;
+      if (response.status == 401) {
+        this.props.navigation.navigate("ValidateEmail");
+      } else if (response.status == 201) {
+        this.props.addLogin(jwt);
+        console.log(this)
+      }
+      return response;
+    })
+    .catch(error => console.error("Error:", error));
+    
   };
 
+  componentDidMount() {
+    this.setState({ user: "ialemusm@unal.edu.co", pass: "Ivan1234" })
+  }
+
   render() {
+
     return (
       <View style={{ flex: 2, justifyContent: "center" }}>
         <TextInput
@@ -91,7 +93,7 @@ class UserInput extends Component {
           color="#FF6B35"
           mode="outlined"
           title="Iniciar Sesión"
-          onPress={this.login}
+          onPress={this.handleLogin}
         >
           Iniciar Sesión
         </Button>
@@ -100,4 +102,11 @@ class UserInput extends Component {
   }
 }
 
-export default connect()(UserInput);
+const mapStateToProps = state => {
+  return { state }
+}
+
+export default connect(
+  mapStateToProps,
+  { addLogin }
+)(UserInput);
