@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet,View,ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet,View,ScrollView, KeyboardAvoidingView } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import {Crypt, keyManager, RSA} from 'hybrid-crypto-js';
@@ -69,8 +69,25 @@ function encrypt(message){
 
 
 export default class UserInput extends Component {
+  
+  state = {
+    user: '',
+    pass: '',
+    repass: '',
+    email: '',
+    birthday: '', //YYYY-MM-DD  14 <= X <= 100,
+    errorUser: false,
+    errorDate: false,
+    errorEmail: false,
+    errorPass: false,
+    errorRePass: false,
+    loading: false
+  };
+
+
   signUp = () => {
     //var cryptoPass = encrypt(pass);
+    this.setState({ loading: true })
     var ans = fetch('https://meemperrapi.herokuapp.com/signup', {
       method: 'POST',
       headers: {
@@ -84,30 +101,22 @@ export default class UserInput extends Component {
           password: this.state.pass
         }
       })
-    }).then(response => {
+    })
+    .then(response => {
       console
       if(response.ok){
-        console.log('Success', response)
+        console.log('Success', response);
+        this.setState({ loading: false });
         this.props.navigation.navigate('ValidateEmail');
       } else {
         console.log('Error:', response)
       }
     })
+    .catch( error => {
+      this.setState({ loading: false });
+      return error;
+    })
   }
-
-  state = {
-    user: '',
-    pass: '',
-    repass: '',
-    email: '',
-    birthday: '', //YYYY-MM-DD  14 <= X <= 100,
-    errorUser: false,
-    errorDate: false,
-    errorEmail: false,
-    errorPass: false,
-    errorRePass: false,
-    disabled: false
-  };
 
   validate = (input,value) => {
   switch(input){
@@ -282,9 +291,17 @@ export default class UserInput extends Component {
           <View style={{marginLeft: 8}}><Text style={styles.error} theme={themes}> Las contraseñas no coinciden </Text></View> :
           null }
         
-        <Button style={ {margin: 8} } color="#FF6B35" mode="outlined" title="Registrarse" 
-          onPress = {this.signUp}
-        > Registrarse </Button>
+          <Button 
+            style={ {margin: 8} } 
+            color="#FF6B35" 
+            mode="outlined" 
+            title="Registrarse" 
+            onPress = {this.signUp}
+            disabled = {this.state.loading}
+            loading = {this.state.loading}
+          > 
+            Registrarse 
+          </Button>
         </View>
     )
   }

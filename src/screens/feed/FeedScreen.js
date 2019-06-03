@@ -20,33 +20,60 @@ class FeedScreen extends Component {
 
   makeRemoteRequest = () => {
     const { page } = this.state;
-    const url = 'https://meemperrapi.herokuapp.com/pictures';
-    this.setState({ loading: true}); 
-    fetch(url)
-    .then(res => res.json())
-    .then(res => {
-      images = res.map(elem => {
-        ans = { 'image': elem.image, 'key': ''+elem.id};
-        return ans;
+    const url = `https://meemperrapi.herokuapp.com/momazos/best?page=${page}&per_page=12`;
+    //const url = 'https://meemperrapi.herokuapp.com/pictures';
+    setTimeout(() => {
+      console.log('Loading Images');
+      this.setState({ loading: true }); 
+      fetch(url)
+      .then(res => res.json())
+      .then(res => {
+        images = res.map(elem => {
+          ans = { 'image': elem.img, 'key': ''+elem.id};
+          return ans;
+        });
+        if(this.state.page != 1){
+          images = [...this.state.data, ...images]
+        }
+        this.setState({
+          data: images,
+          error: res.error || null,
+          loading: false,
+          refreshing: false
+        });
+        console.log('Finished loading images');
+      })
+      .catch( error => {
+        console.log('Infinite Scroll error', error)
+        this.setState({ error, loading: false, refreshing: false});
+        return error;
       });
-      this.setState({
-        data: [...this.state.data, ...images],
-        error: res.error || null,
-        loading: false,
-        refreshing: false
-      });
-    })
-    .catch( error => {
-      this.setState({ error, loading: false, refreshing: false});
-    });
+    }, 1500);
+    
   }
 
 
   
   handleRefresh = () => {
-    //this.setState(
+    this.setState(
+      {
+        page: 1,
+        refreshing: true
+      },
+      () => {
+        this.makeRemoteRequest();
+      }
 
-    //);
+    );
+  }
+
+  handleLoadMore = () => {
+    this.setState({
+      page: this.state.page + 1,
+      rereshing: true,
+    }, () => {
+      this.makeRemoteRequest();
+    })
   }
 
   renderImage = (image) => {
@@ -56,17 +83,17 @@ class FeedScreen extends Component {
 
   render() {
     return(
-      <View style={{flex: 1}} >
-        <FlatList
-          data={this.state.data}
-          numColumns={3}
-          renderItem={(elem) => {
-            return this.renderImage(elem.item.image)}
-          }
-
-
-        />
-      </View>
+      <FlatList
+        data={this.state.data}
+        numColumns={3}
+        renderItem={(elem) => {
+          return this.renderImage(elem.item.image)}
+        }
+        refreshing={this.state.refreshing}
+        onRefresh={this.handleRefresh}
+        onEndReached={this.handleLoadMore}
+        onEndTreshold={100}
+      />
     );
   }
 }

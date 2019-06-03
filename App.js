@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 
 class App extends Component {
   state={
-    authenticated: false
+    authenticated: true
   };
 
   render() {
