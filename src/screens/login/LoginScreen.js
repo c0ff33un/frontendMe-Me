@@ -1,25 +1,27 @@
-import React, { Component } from 'react'
-import { ScrollView, StyleSheet } from 'react-native'
-import UserInput from './components/UserInput';
-import SignUp from './components/SignUp';
-import Header from './components/Header';
+import React, { Component } from "react";
+import { ScrollView, StyleSheet } from "react-native";
+import UserInput from "./components/UserInput";
+import SignUp from "./components/SignUp";
+import Header from "./components/Header";
+import { connect } from "react-redux";
 
 class LoginScreen extends Component {
   render() {
-    return(
-        <ScrollView style={styles.container}>
-            <Header />
-            <UserInput navigation={this.props.navigation} />
-            <SignUp navigation={this.props.navigation} /> 
-        </ScrollView>
-    )
+    console.log("Login", this.props);
+    return (
+      <ScrollView style={styles.container}>
+        <Header />
+        <UserInput navigation={this.props.navigation} />
+        <SignUp navigation={this.props.navigation} />
+      </ScrollView>
+    );
   }
 }
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     flex: 1
   }
 });
 
-export default LoginScreen
+export default connect()(LoginScreen);
