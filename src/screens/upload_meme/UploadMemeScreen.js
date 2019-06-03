@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Text, View, Button, Image, Dimensions } from 'react-native'
+import { Button, Text, View, Image, Dimensions } from 'react-native'
+//import { Button } from 'react-native-paper'
 import { ImagePicker } from 'expo';
 
 class UploadMemeScreen extends Component {
@@ -21,7 +22,7 @@ class UploadMemeScreen extends Component {
         }
       };
 
-    uploadMeme = async () => {
+    uploadMeme = () => {
         this.setState({ loading: true });
         fetch('https://meemperrapi.herokuapp.com/users/4/memes', { //Cambiar cuando se guarde la sesión en Redux
             method: 'POST',
@@ -59,20 +60,23 @@ class UploadMemeScreen extends Component {
                 {image &&
                   <Image 
                     source={{ uri: image }}
-                    style={{width: 400, height: 450, alignSelf: "center", marginBottom: 20}}
+                    style={{width: 400, height: 450, alignSelf: "center", marginBottom: 5}}
                     resizeMode="contain"
                   />
                 }
                 {image && 
-                  <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+                  <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                     <Button
+                      style={{flex: 1}}
                       title="Cambiar Me-Me"
                       onPress={this.handleChoosePhoto}
                     />
                     <Button
+                      style={{flex: 1}}
                       title="Subir Me-Me"
                       onPress={this.uploadMeme}
                       disabled={this.state.loading}
+                      loading={this.state.loading}
                     />   
                   </View>
                 }
