@@ -9,7 +9,7 @@ class LoginScreen extends Component {
     return(
         <ScrollView style={styles.container}>
             <Header />
-            <UserInput />
+            <UserInput navigation={this.props.navigation} />
             <SignUp navigation={this.props.navigation} /> 
         </ScrollView>
     )
@@ -17,9 +17,9 @@ class LoginScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  /*container:{
-    justifyContent: 'space-between',
-  }*/
+  container:{
+    flex: 1
+  }
 });
 
 export default LoginScreen

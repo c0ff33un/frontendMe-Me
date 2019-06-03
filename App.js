@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { StatusBar, StyleSheet, Text, View } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import AuthenticatedAppContainer from './src/routing/AuthenticatedAppContainer';
-import UnathenticatedAppContainer from './src/routing/UnathenticatedAppContainer';
+import UnauthenticatedAppContainer from './src/routing/UnauthenticatedAppContainer';
 import { Constants } from 'expo';
 // redux
 import { createStore } from 'redux'
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 
 class App extends Component {
   state={
-    authenticated: true
+    authenticated: false
   };
 
   render() {
