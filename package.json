@@ -6,6 +6,7 @@
     "ios": "expo start --ios",
     "eject": "expo eject"
   },
+  "name": "me-me",
   "dependencies": {
     "expo": "^32.0.0",
     "hybrid-crypto-js": "^0.1.7",
