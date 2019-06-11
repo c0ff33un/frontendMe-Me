@@ -2,8 +2,35 @@ import React, { Component } from 'react'
 import { Text, View, Link } from 'react-native'
 import {Button} from 'react-native-paper'
 import { SocialIcon } from 'react-native-elements'
+import getEnvVars from 'me-me/environment'
+import { Google } from 'expo'
 
-export default class SignUp extends Component {
+class SignUp extends Component {
+
+  state = {
+    loading : false
+  }
+
+  googleLogIn = async () => {
+    try{
+
+      const { androidClientId } = getEnvVars;
+      console.log(androidClientId);
+      this.setState({ loading: true });
+      const { type, user, accessToken } = await Google.logInAsync({
+        androidClientId: androidClientId
+      });
+      this.setState({ loading: false }); 
+      if (type === 'success') {
+        console.log(user, accessToken);
+      }
+    } catch ({ message }) {
+      alert(`login: ${message}`);
+      this.setState({ loading: false });
+    }
+      
+  }
+
   render(){
     return (
       <View style={{flex: 2, justifyContent: 'center'}}>
@@ -18,6 +45,9 @@ export default class SignUp extends Component {
         <SocialIcon
           title='Sign In With Google'
           button
+          disabled={this.state.loading}
+          loading={this.state.loading}
+          onPress={this.googleLogIn}
           type='google-plus-official'
         />
         <Button
@@ -29,3 +59,5 @@ export default class SignUp extends Component {
     );
   }
 }
+
+export default SignUp;
