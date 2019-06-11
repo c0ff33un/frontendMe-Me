@@ -102,8 +102,7 @@ export default class UserInput extends Component {
         }
       })
     })
-    .then(response => {
-      console
+    .then(response => { 
       if(response.ok){
         console.log('Success', response);
         this.setState({ loading: false });

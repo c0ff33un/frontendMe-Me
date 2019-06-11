@@ -29,7 +29,6 @@ class UserInput extends Component {
   };
 
   handleLogin = () => {
-    console.log( 'here' )
     var ans = fetch("https://meemperrapi.herokuapp.com/login", {
       method: "POST",
       headers: {
@@ -48,7 +47,6 @@ class UserInput extends Component {
         this.props.navigation.navigate("ValidateEmail");
       } else if (response.status == 201) {
         this.props.addLogin(jwt);
-        console.log(this)
       }
       return response;
     })

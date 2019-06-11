@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Image, Text, StyleSheet, View, FlatList } from 'react-native'
+import { connect } from 'react-redux'
 
 class SettingsScreen extends Component {
   
   state = {
-    jwt: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0Iiwic2NwIjoidXNlciIsImlhdCI6MTU1OTU0MDQ0MSwiZXhwIjoxNTU5NjI2ODQxLCJqdGkiOiI3OTAzZDZlNi0xOGMxLTQzMmItODY4Zi1iMDcxNzNmNDRiMmYifQ._e51p5y2si6U1UTnRyr5nK08oj-ibRvefpvZBI8WLhw',
     stats: {}
   }
 
@@ -12,10 +12,11 @@ class SettingsScreen extends Component {
   makeRemoteRequest = () => {
     const url = 'https://meemperrapi.herokuapp.com/user_stats/stats'
     const url2 = 'https://meemperrapi.herokuapp.com/user_stats/best_memes'
+    const { session } = this.props
     fetch(url, {
       method: 'GET',
       headers: {
-        'Authorization': this.state.jwt
+        'Authorization': session
       },
     })
     .then( res => res.json() )
@@ -28,10 +29,10 @@ class SettingsScreen extends Component {
       console.log(error);
       return error;
     })
-    fetch(url2, {
+    /*fetch(url2, {
       method: 'GET',
       headers: {
-        'Authorization': this.state.jwt
+        'Authorization': session
       }
     })
     .then(res => res.json())
@@ -49,10 +50,10 @@ class SettingsScreen extends Component {
       console.log('Finished loading images');
     })
     .catch( error => {
-      console.log('Infinite Scroll error', error)
+      console.log('Settings Infinite Scroll error', error)
       this.setState({ error, loading: false, refreshing: false});
       return error;
-    });
+    });*/
   }
 
   componentDidMount() {
@@ -60,30 +61,46 @@ class SettingsScreen extends Component {
   }
 
   renderImage = (image) => {
-    return <Image style={{width: 150, height: 150, flex: 1, borderWidth: 1, borderColor: 'black', alignSelf: 'stretch'}}source={{uri: `data:image/gif;base64,${image}`}}/>
+    return <Image style={styles.image}source={{uri: `data:image/gif;base64,${image}`}}/>
   }
 
   render() {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.container}>
         <Text> Settings.js </Text>
         <Text> Comments: {this.state.stats.comments} </Text>
         <Text> Own Memes: {this.state.stats.own_memes} </Text>
         <Text> Own Posts: {this.state.stats.own_posts} </Text>
         <Text> Reactions: {this.state.stats.reactions} </Text>
-        <FlatList
+        {/*<FlatList
           data={this.state.data}
           numColumns={3}
           renderItem={(elem) => {
             return this.renderImage(elem.item.image)}
           }
           refreshing={this.state.refreshing}
-        />
+        />*/}
       </View>
     )
   }
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  image: {
+    width: 150, 
+    height: 150, 
+    borderWidth: 1, 
+    borderColor: 'black',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+})
 
-export default SettingsScreen
+function mapStateToProps(state) {
+  return { session: state.session } 
+}
+
+export default connect(mapStateToProps)(SettingsScreen)
