@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import { connect } from "react-redux";
-import { addLogin } from '../../../redux/actions'
+import { addLogin } from "../../../redux/actions";
+import Spinner from "react-native-loading-spinner-overlay";
 
 const colorTextInput = "#FF6B35";
 
@@ -25,10 +26,12 @@ class UserInput extends Component {
   state = {
     user: "",
     pass: "",
-    error: false
+    error: false,
+    loading: false
   };
 
   handleLogin = () => {
+    this.setState({ loading: true });
     var ans = fetch("https://meemperrapi.herokuapp.com/login", {
       method: "POST",
       headers: {
@@ -41,27 +44,32 @@ class UserInput extends Component {
         }
       })
     })
-    .then(response => {
-      const jwt = response.headers.map.authorization;
-      if (response.status == 401) {
-        this.props.navigation.navigate("ValidateEmail");
-      } else if (response.status == 201) {
-        this.props.addLogin(jwt);
-      }
-      return response;
-    })
-    .catch(error => console.error("Error:", error));
-    
+      .then(response => {
+        const jwt = response.headers.map.authorization;
+        if (response.status == 401) {
+          this.props.navigation.navigate("ValidateEmail");
+        } else if (response.status == 201) {
+          this.props.addLogin(jwt);
+        }
+        this.setState({ loading: false });
+        return response;
+      })
+      .catch(error => console.error("Error:", error));
   };
 
   componentDidMount() {
-    this.setState({ user: "ialemusm@unal.edu.co", pass: "Ivan1234" })
+    this.setState({ user: "ialemusm@unal.edu.co", pass: "Ivan1234" });
   }
 
   render() {
-
     return (
       <View style={{ flex: 2, justifyContent: "center" }}>
+        <Spinner
+          visible={this.state.loading}
+          textContent={"Cargando"}
+          textStyle={styles.spinnerTextStyle}
+          color={"#FF6B35"}
+        />
         <TextInput
           mode="outlined"
           label="Email o nombre de usuario"
@@ -101,8 +109,8 @@ class UserInput extends Component {
 }
 
 const mapStateToProps = state => {
-  return { state }
-}
+  return { state };
+};
 
 export default connect(
   mapStateToProps,
