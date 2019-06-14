@@ -1,7 +1,5 @@
 import { combineReducers } from 'redux'
 import {
-  LOGIN,
-  LOGOUT,
   SET_MEME_FILTER,
   SET_UPLOAD_MEME,
   TOGGLE_UPLOADING_MEME,
@@ -28,19 +26,6 @@ function memeFilter(state = HOT, action) {
   }
 }
 
-function jwt(state = null, action) {
-  switch (action.type) {
-    case LOGIN:
-      const { jwt } = action.payload;
-      return 
-      //todo
-    case LOGOUT:
-      return null
-    default:
-      return state
-  }
-}
-
 function uploadScreenImage(state = null, action) {
   switch (action.type) {
     case SET_UPLOAD_MEME:
@@ -58,7 +43,6 @@ function uploadingMeme(state = false, action) {
       return state
   }
 }
-
 
 const memeAppReducer = combineReducers({
   memeFilter,

@@ -4,7 +4,7 @@ import { TextInput, Button, Text } from 'react-native-paper';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import {Crypt, keyManager, RSA} from 'hybrid-crypto-js';
 import DatePicker from 'react-native-datepicker';
-
+import getEnvVars from 'me-me/environment'
 
 const colorTextInput = "#FF6B35";
 
@@ -88,7 +88,9 @@ export default class UserInput extends Component {
   signUp = () => {
     //var cryptoPass = encrypt(pass);
     this.setState({ loading: true })
-    var ans = fetch('https://meemperrapi.herokuapp.com/signup', {
+    const { apiUrl } = getEnvVars
+    console.log(apiUrl)
+    var ans = fetch('http://localhost:3000/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -103,7 +105,7 @@ export default class UserInput extends Component {
       })
     })
     .then(response => {
-      console
+      console.log(response)
       if(response.ok){
         console.log('Success', response);
         this.setState({ loading: false });
@@ -113,9 +115,11 @@ export default class UserInput extends Component {
       }
     })
     .catch( error => {
+      console.log(error)
       this.setState({ loading: false });
       return error;
     })
+    console.log('what')
   }
 
   validate = (input,value) => {

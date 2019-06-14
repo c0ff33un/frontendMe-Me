@@ -48,7 +48,7 @@ class MemeApp extends Component {
 const mapStateToProps = state => {
   const { session } = state
   const authenticated = session || false
-  console.log('MemeApp: ', authenticated)
+  //console.log('MemeApp: ', authenticated)
   return { authenticated }
 };
 

@@ -14,15 +14,26 @@ class SignUp extends Component {
   googleLogIn = async () => {
     try{
 
-      const { androidClientId } = getEnvVars;
-      console.log(androidClientId);
+      const { androidClientId, apiUrl } = getEnvVars;
+      //console.log(androidClientId);
       this.setState({ loading: true });
       const { type, user, accessToken } = await Google.logInAsync({
         androidClientId: androidClientId
       });
-      this.setState({ loading: false }); 
       if (type === 'success') {
         console.log(user, accessToken);
+        fetch(apiUrl + '/auth/google_oauth2/callback', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user: user,
+            accessToken: accessToken
+          })
+        })
+      }else{
+        this.setState({ loading: false }); 
       }
     } catch ({ message }) {
       alert(`login: ${message}`);

@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import { connect } from "react-redux";
-import { addLogin } from '../../../redux/actions'
+import { addLogin } from '@redux/actions'
+import getEnvVars from 'me-me/environment'
+
 
 const colorTextInput = "#FF6B35";
 
@@ -29,8 +31,10 @@ class UserInput extends Component {
   };
 
   handleLogin = () => {
-    console.log( 'here' )
-    var ans = fetch("https://meemperrapi.herokuapp.com/login", {
+    const { apiUrl } = getEnvVars
+
+    console.log(apiUrl + '/login')
+    var ans = fetch(apiUrl + '/login', {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -48,7 +52,7 @@ class UserInput extends Component {
         this.props.navigation.navigate("ValidateEmail");
       } else if (response.status == 201) {
         this.props.addLogin(jwt);
-        console.log(this)
+        //console.log(this)
       }
       return response;
     })
