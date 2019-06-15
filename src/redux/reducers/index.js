@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
 import session from './session'
-import memeFilter from './memeFilter'
+import { memesByFilter, selectedFilter }  from './memes'
 
-export default combineReducers({ session, memeFilter });
+export default combineReducers({ session, memesByFilter, selectedFilter });
