@@ -10,6 +10,8 @@
   "dependencies": {
     "expo": "^32.0.0",
     "expo-cli": "^2.19.5",
+    "expo-facebook": "^5.0.1",
+    "firebase": "^6.2.0",
     "hybrid-crypto-js": "^0.1.7",
     "js-sha256": "^0.9.0",
     "react": "^16.5.0",
