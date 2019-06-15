@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import { connect } from "react-redux";
-import { addLogin } from "../../../redux/actions";
+import { login } from '@redux/actions'
 import Spinner from "react-native-loading-spinner-overlay";
+
 
 const colorTextInput = "#FF6B35";
 
@@ -24,61 +25,39 @@ const validation = state => {
 
 class UserInput extends Component {
   state = {
-    user: "",
+    email: "",
     pass: "",
     error: false,
     loading: false
   };
 
   handleLogin = () => {
-    this.setState({ loading: true });
-    var ans = fetch("https://meemperrapi.herokuapp.com/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        user: {
-          email: this.state.user,
-          password: this.state.pass
-        }
-      })
-    })
-      .then(response => {
-        const jwt = response.headers.map.authorization;
-        if (response.status == 401) {
-          this.props.navigation.navigate("ValidateEmail");
-        } else if (response.status == 201) {
-          this.props.addLogin(jwt);
-        }
-        this.setState({ loading: false });
-        return response;
-      })
-      .catch(error => console.error("Error:", error));
-  };
+    const { email, pass } = this.state
+    this.props.dispatch(login(email, pass))
+  }
 
   componentDidMount() {
-    this.setState({ user: "ialemusm@unal.edu.co", pass: "Ivan1234" });
+    this.setState({ email: "ialemusm@unal.edu.co", pass: "Ivan1234" });
   }
 
   render() {
     return (
-      <View style={{ flex: 2, justifyContent: "center" }}>
+      <View style={{ flex: 1, justifyContent: "center" }}>
         <Spinner
-          visible={this.state.loading}
+          visible={this.props.isLoggingIn}
           textContent={"Cargando"}
           textStyle={styles.spinnerTextStyle}
           color={"#FF6B35"}
         />
         <TextInput
           mode="outlined"
-          label="Email o nombre de usuario"
+          label="Email"
           error={this.state.error}
           style={styles.email}
-          value={this.state.user}
+          value={this.state.email}
           selectionColor={colorTextInput}
           underlineColorAndroid={colorTextInput}
-          onChangeText={user => this.setState({ user })}
+          onChangeText={email => this.setState({ email })}
         />
         <TextInput
           mode="outlined"
@@ -92,7 +71,7 @@ class UserInput extends Component {
         <View
           style={{ alignSelf: "flex-end", marginBottom: 20, marginRight: 9 }}
         >
-          <Text style={{ fontSize: 10 }}>¿Olvidaste tú contraseña?</Text>
+          <Text style={{ fontSize: 10 }}>¿Olvidaste tu contraseña?</Text>
         </View>
         <Button
           style={{ margin: 8 }}
@@ -103,16 +82,20 @@ class UserInput extends Component {
         >
           Iniciar Sesión
         </Button>
+        <Button
+            title="Sign Up"
+            onPress={() => this.props.navigation.navigate('SignUp')}
+          >
+            Sign Up
+          </Button>
       </View>
     );
   }
 }
 
-const mapStateToProps = state => {
-  return { state };
-};
+const mapStateToProps = (state) => {
+  const { isLoggingIn } = state.session
+  return { isLoggingIn }
+}
 
-export default connect(
-  mapStateToProps,
-  { addLogin }
-)(UserInput);
+export default connect(mapStateToProps)(UserInput)

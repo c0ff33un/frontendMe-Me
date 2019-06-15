@@ -10,7 +10,7 @@ class SignUp extends Component {
     loading: false
   };
 
-  faceboolLogIn = async () => {
+  facebookLogIn = async () => {
     try {
       const {
         type,
@@ -36,16 +36,27 @@ class SignUp extends Component {
   };
 
   googleLogIn = async () => {
-    try {
+    try{
       const { androidClientId } = getEnvVars;
       console.log(androidClientId);
       this.setState({ loading: true });
       const { type, user, accessToken } = await Google.logInAsync({
         androidClientId: androidClientId
       });
-      this.setState({ loading: false });
-      if (type === "success") {
+      if (type === 'success') {
         console.log(user, accessToken);
+        fetch(apiUrl + '/auth/google_oauth2/callback', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user: user,
+            accessToken: accessToken
+          })
+        })
+      }else{
+        this.setState({ loading: false }); 
       }
     } catch ({ message }) {
       alert(`login: ${message}`);
@@ -55,30 +66,25 @@ class SignUp extends Component {
 
   render() {
     return (
-      <View style={{ flex: 2, justifyContent: "center" }}>
-        <View style={{ alignSelf: "center", marginTop: 8, marginBottom: 8 }}>
-          <Text>Or</Text>
-        </View>
+      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-end', marginBottom: 10}}>
+        <View style={{flex: 1}} />
         <SocialIcon
-          title="Sign In With Facebook"
           button
           type="facebook"
-          onPress={this.faceboolLogIn}
+          onPress={this.facebookLogIn}
+          style={{flex: 2}}
+          light
+          type='facebook'
         />
         <SocialIcon
-          title="Sign In With Google"
-          button
+          style={{flex: 2}}
+          light
           disabled={this.state.loading}
           loading={this.state.loading}
           onPress={this.googleLogIn}
           type="google-plus-official"
         />
-        <Button
-          title="Sign Up"
-          onPress={() => this.props.navigation.navigate("SignUp")}
-        >
-          Sign Up
-        </Button>
+        <View style={{flex: 1}} />
       </View>
     );
   }

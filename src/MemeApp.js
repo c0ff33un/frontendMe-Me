@@ -11,8 +11,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
   },
   statusBar: {
     backgroundColor: "#FFF",
@@ -46,9 +44,8 @@ class MemeApp extends Component {
 }
 
 const mapStateToProps = state => {
-  const { session } = state
-  const authenticated = session || false
-  console.log('MemeApp: ', authenticated)
+  const { jwt } = state.session
+  const authenticated = jwt || false
   return { authenticated }
 };
 
