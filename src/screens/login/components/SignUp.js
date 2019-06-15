@@ -44,28 +44,22 @@ class SignUp extends Component {
 
   render(){
     return (
-      <View style={{flex: 2, justifyContent: 'center'}}>
-        <View style = {{alignSelf: 'center', marginTop: 8, marginBottom: 8}}>
-          <Text>Or</Text>
-        </View>
+      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-end', marginBottom: 10}}>
+        <View style={{flex: 1}} />
         <SocialIcon
-          title='Sign In With Facebook'
-          button
+          style={{flex: 2}}
+          light
           type='facebook'
         />
         <SocialIcon
-          title='Sign In With Google'
-          button
+          style={{flex: 2}}
+          light
           disabled={this.state.loading}
           loading={this.state.loading}
           onPress={this.googleLogIn}
           type='google-plus-official'
         />
-        <Button
-          title="Sign Up"
-          onPress={() => this.props.navigation.navigate('SignUp')}>
-            Sign Up
-        </Button>
+        <View style={{flex: 1}} />
       </View>
     );
   }

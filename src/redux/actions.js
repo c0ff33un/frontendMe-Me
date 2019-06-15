@@ -15,11 +15,11 @@ import {
  * action creators
  */
 
-export function addLogin(jwt) {
+export function login(jwt) {
   return { type: LOGIN, payload: { jwt } }
 }
 
-export function addLogout() {
+export function logout() {
   return { type: LOGOUT }
 }
 

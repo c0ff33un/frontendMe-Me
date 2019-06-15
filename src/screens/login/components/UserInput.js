@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import { connect } from "react-redux";
-import { addLogin } from '@redux/actions'
+import { login } from '@redux/actions'
 import getEnvVars from 'me-me/environment'
 
 
@@ -51,8 +51,7 @@ class UserInput extends Component {
       if (response.status == 401) {
         this.props.navigation.navigate("ValidateEmail");
       } else if (response.status == 201) {
-        this.props.addLogin(jwt);
-        //console.log(this)
+        this.props.login(jwt);
       }
       return response;
     })
@@ -67,10 +66,10 @@ class UserInput extends Component {
   render() {
 
     return (
-      <View style={{ flex: 2, justifyContent: "center" }}>
+      <View style={{ flex: 1, justifyContent: "center" }}>
         <TextInput
           mode="outlined"
-          label="Email o nombre de usuario"
+          label="Email"
           error={this.state.error}
           style={styles.email}
           value={this.state.user}
@@ -90,7 +89,7 @@ class UserInput extends Component {
         <View
           style={{ alignSelf: "flex-end", marginBottom: 20, marginRight: 9 }}
         >
-          <Text style={{ fontSize: 10 }}>¿Olvidaste tú contraseña?</Text>
+          <Text style={{ fontSize: 10 }}>¿Olvidaste tu contraseña?</Text>
         </View>
         <Button
           style={{ margin: 8 }}
@@ -101,6 +100,12 @@ class UserInput extends Component {
         >
           Iniciar Sesión
         </Button>
+        <Button
+            title="Sign Up"
+            onPress={() => this.props.navigation.navigate('SignUp')}
+          >
+            Sign Up
+          </Button>
       </View>
     );
   }
@@ -112,5 +117,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { addLogin }
+  { login }
 )(UserInput);

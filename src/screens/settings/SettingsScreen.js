@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from 'react'
-import { Image, Text, StyleSheet, View, FlatList } from 'react-native'
+import { Image, Text, Button, StyleSheet, View, FlatList } from 'react-native'
 import { connect } from "react-redux";
-
+import { logout } from '@redux/actions'
 
 class SettingsScreen extends Component {
   
   state = {
+    loggingOut: false,
     stats: {}
   }
 
@@ -66,11 +67,23 @@ class SettingsScreen extends Component {
       source={{uri: image}}/>
   }
 
+  handleLogout = () => {
+    this.setState({ loggingOut: true })
+    this.props.logout()
+  }
+
   render() {
     return (
       <Fragment>
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          <Text> Settings.js </Text>
+          <Text> Control </Text>
+          <Button 
+            title="Logout"
+            disabled={this.state.loggingOut}
+            loading={this.state.loggingOut}
+            onPress={this.handleLogout}
+          />
+          <Text> Stats </Text>
           <Text> Comments: {this.state.stats.comments} </Text>
           <Text> Own Memes: {this.state.stats.own_memes} </Text>
           <Text> Own Posts: {this.state.stats.own_posts} </Text>
@@ -97,4 +110,6 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(SettingsScreen)
+export default connect(mapStateToProps, {
+  logout
+})(SettingsScreen)
