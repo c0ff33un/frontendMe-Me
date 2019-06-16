@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from 'react'
-import { Image, Text, Button, StyleSheet, View, FlatList } from 'react-native'
+import { Image, Text, StyleSheet, View, FlatList } from 'react-native'
+import { Button } from 'react-native-paper'
 import { connect } from "react-redux";
 import { logout } from '@redux/actions'
+import getEnvVars from 'me-me/environment'
 
 class SettingsScreen extends Component {
   
@@ -9,13 +11,14 @@ class SettingsScreen extends Component {
     loggingOut: false,
     stats: {},
     info: {},
+    data: []
   }
 
-
-  makeRemoteRequest = async () => {
-    const url = 'https://meemperrapi.herokuapp.com/user/stats'
-    const url2 = 'https://meemperrapi.herokuapp.com/user/memes'
-
+  makeRemoteRequest = () => {
+    const { apiUrl } = getEnvVars
+    const url = `${apiUrl}/user/stats`
+    const url2 = `${apiUrl}/user/best_memes`
+    const url3 = `${apiUrl}/user/`
     const jwt = this.props.jwt;
 
     const options = {
@@ -25,50 +28,33 @@ class SettingsScreen extends Component {
       },
     }
 
-    const fetchStats = await fetch(url, options)
-    const fetchUserInfo = await fetch(url2,options)
+    const fetchStats = fetch(url, options)
+    const fetchUserMemes = fetch(url2,options)
+    const fetchUserInfo = fetch(url3,options)
 
-    Promise.all([fetchStats,fetchUserInfo])
+    Promise.all([fetchStats, fetchUserMemes, fetchUserInfo])
       .then( res => {
-        res[0].json().then(data => {
-          this.setState({stats:data})
+        Promise.all([res[0].json(),res[1].json(),res[2].json()])
+        .then(data => {
+          
+          // console.log(data)
+          const images = data[1].map( elem => {
+            return { 
+              "image": elem.img,
+              "key": `${elem.id}`
+            }
+          })
+          console.log(images)
+          this.setState({
+            stats: data[0],
+            data: images,
+            info: data[3]
+          })
+          // this.setStatñ{e({stats:data})
         }) 
-        res[1].json().then(data => {
-          this.setState({info:data})  
-        })
+
       })
       .catch(e => console.error(e))
-
-
-    // Promise.all([fetchStats, fetchUserInfo])
-    //   .then( response => JSON.parse(JSON.stringify(response,null,2)))
-    //   .then( data => console.log(data))
-    //   .catch(error => console.log('settings error', error))
-    /*fetch(url2, {
-      method: 'GET',
-      headers: {
-        'Authorization': jwt
-      }
-    })
-    .then(res => res.json())
-    .then(res => {
-      images = res.map(elem => {
-        ans = { 'image': elem.img, 'key': ''+elem.id};
-        return ans;
-      });
-      this.setState({
-        data: images,
-        error: res.error || null,
-        loading: false,
-        refreshing: false
-      });
-      console.log('Finished loading images');
-    })
-    .catch( error => {
-      console.log('Settings Infinite Scroll error', error)
-      this.setState({ error, loading: false, refreshing: false});
-      return error;
-    });*/
   }
 
   componentDidMount() {

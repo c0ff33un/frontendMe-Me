@@ -90,7 +90,7 @@ export default class UserInput extends Component {
     this.setState({ loading: true })
     const { apiUrl } = getEnvVars
     console.log(apiUrl)
-    var ans = fetch('http://localhost:3000/signup', {
+    var ans = fetch(apiUrl + '/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -194,7 +194,7 @@ export default class UserInput extends Component {
 
   render() {
     return (
-        <View>
+        <View style = {{flex: 1}}>
           <View style={{marginLeft: 8}}>
             <Text>Ingresa tu nombre de usuario</Text>
           </View>
@@ -217,27 +217,27 @@ export default class UserInput extends Component {
           </View>
           {/* Se debe utilizar date picker */}
           <DatePicker
-          style={{width: 400, margin: 8}}
-          date={this.state.birthday}
-          mode="date"
-          placeholder="select date"
-          format="YYYY-MM-DD"
-          minDate="1919-05-01"
-          confirmBtnText="Confirmar"
-          cancelBtnText="Cancel"
-          customStyles={{
-            dateIcon: {
-              width:0,
-              height:0,
-            },
-            dateInput: {
-              height: 30,
-              width: 400 
-            }
-            // ... You can check the source to find the other keys.
-          }}
-          onDateChange={birthday => {this.setState({birthday: birthday}); this.validate("birthday", birthday) } }
-        />
+            style={{ margin: 8}}
+            date={this.state.birthday}
+            mode="date"
+            placeholder="select date"
+            format="YYYY-MM-DD"
+            minDate="1919-05-01"
+            confirmBtnText="Confirmar"
+            cancelBtnText="Cancel"
+            customStyles={{
+              dateIcon: {
+                width:0,
+                height:0,
+              },
+              dateInput: {
+                height: 30,
+                width: 400 
+              }
+              // ... You can check the source to find the other keys.
+            }}
+            onDateChange={birthday => {this.setState({birthday: birthday}); this.validate("birthday", birthday) } }
+          />
           {this.state.errorDate ? 
           <View style={{marginLeft: 8}}><Text style={styles.error} theme={themes}> Debes ser mayor de 14 años para usar la aplicación</Text></View> :
           null }

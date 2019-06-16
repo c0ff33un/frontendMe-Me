@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Button, Text, View, Image, Dimensions } from 'react-native'
-//import { Button } from 'react-native-paper'
+import { Text, View, Image, Dimensions } from 'react-native'
+import { Button } from 'react-native-paper'
 import { ImagePicker } from 'expo';
 import { connect } from "react-redux";
+import getEnvVars from 'me-me/environment'
 
 class UploadMemeScreen extends Component {
     state = {
@@ -35,9 +36,9 @@ class UploadMemeScreen extends Component {
           type: `image/${fileType}`,
         })
 
-        console.log(meme)
+        const { apiUrl } = getEnvVars
 
-        let url = 'https://meemperrapi.herokuapp.com/user/memes'
+        let url = apiUrl + '/user/memes'
 
         let options = {
           method: 'POST',
@@ -72,10 +73,14 @@ class UploadMemeScreen extends Component {
 
         return (
             <View style={{flex: 1, justifyContent: 'center'}}>
-                {!image && <Button 
+                {!image && 
+                  <Button 
                     title="Choose photo"
                     onPress={this.handleChoosePhoto}
-                />}
+                  >
+                    Choose photo
+                  </Button>
+                }
                 {image &&
                   <Image 
                     source={{ uri: image }}
@@ -86,17 +91,19 @@ class UploadMemeScreen extends Component {
                 {image && 
                   <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                     <Button
-                      style={{flex: 1}}
                       title="Cambiar Me-Me"
                       onPress={this.handleChoosePhoto}
-                    />
+                    >
+                      Change meme
+                    </Button>
                     <Button
-                      style={{flex: 1}}
                       title="Subir Me-Me"
                       onPress={this.uploadMeme}
                       disabled={this.state.loading}
                       loading={this.state.loading}
-                    />   
+                    >
+                      Upload meme
+                    </Button>   
                   </View>
                 }
                 

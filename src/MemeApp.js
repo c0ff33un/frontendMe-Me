@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { StatusBar, StyleSheet, Text, View } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
-import { Constants } from "expo";
+import Constants from "expo-constants";
 import { connect } from "react-redux";
 
 import AuthenticatedAppContainer from "./routing/AuthenticatedAppContainer";
