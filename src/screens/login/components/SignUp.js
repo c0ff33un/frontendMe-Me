@@ -3,7 +3,7 @@ import { Text, View, Link } from "react-native";
 import { Button } from "react-native-paper";
 import { SocialIcon } from "react-native-elements";
 import getEnvVars from "me-me/environment";
-import { Google, Facebook } from "expo";
+import { Google, Facebook, AuthSession } from "expo";
 
 class SignUp extends Component {
   state = {
@@ -33,36 +33,60 @@ class SignUp extends Component {
     } catch ({ message }) {
       alert(`Facebook Login Error: ${message}`);
     }
-  };
+  }
 
   googleLogIn = async () => {
     try{
-      const { androidClientId } = getEnvVars;
-      console.log(androidClientId);
+      const { apiUrl, webClientId } = getEnvVars;
+      
       this.setState({ loading: true });
-      const { type, user, accessToken } = await Google.logInAsync({
-        androidClientId: androidClientId
-      });
-      if (type === 'success') {
-        console.log(user, accessToken);
-        fetch(apiUrl + '/auth/google_oauth2/callback', {
+      let redirectUrl = AuthSession.getRedirectUrl()
+      console.log(webClientId)
+      console.log(getEnvVars)
+      let result = await AuthSession.startAsync({
+        authUrl:
+          `https://accounts.google.com/o/oauth2/v2/auth?` +
+          `&client_id=${webClientId}` +
+          `&redirect_uri=${encodeURIComponent(redirectUrl)}`+
+          `&response_type=code` +
+          `&access_type=offline` +
+          `&scope=${encodeURIComponent('email profile')}`,
+      })
+
+      console.log(result)
+
+      if(result.type === 'success') {
+        
+        const options = {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            user: user,
-            accessToken: accessToken
-          })
+          body: JSON.stringify(result)
+        }
+
+        console.log('options:', options)
+        fetch(apiUrl + '/auth/google_oauth2/callback',
+        options)
+        .then(response => response.json())
+        .then(json => {
+          console.log('json response:', json)
+          this.setState({ loading: false })
+          return json
         })
-      }else{
-        this.setState({ loading: false }); 
+        .catch(error => {
+          console.log(error)
+          this.setState({ loading: false })
+          return error
+        })
+      }else {
+        this.setState({ loading: false })
       }
     } catch ({ message }) {
       alert(`login: ${message}`);
       this.setState({ loading: false });
-    }
-  };
+    }    
+  }
 
   render() {
     return (
@@ -80,7 +104,6 @@ class SignUp extends Component {
           style={{flex: 2}}
           light
           disabled={this.state.loading}
-          loading={this.state.loading}
           onPress={this.googleLogIn}
           type="google-plus-official"
         />

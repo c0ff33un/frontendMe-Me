@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   image: {
     resizeMode: 'center',

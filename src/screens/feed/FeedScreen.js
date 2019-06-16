@@ -56,9 +56,6 @@ class FeedScreen extends Component {
     const { dispatch, selectedFilter } = this.props
     dispatch(increaseMemesPageIfNeeded(selectedFilter))
     dispatch(fetchMemesIfNeeded(selectedFilter)) 
-    setTimeout(() => {
-      this.setState({loading: false})
-    }, 3000)
   }
 
   renderImage = (image) => {
@@ -69,7 +66,7 @@ class FeedScreen extends Component {
   renderFooter = () => {
     console.log("renderFooter")
     console.log(this.props.isFetching, this.state.loading)
-    if (!this.props.isFetching && !this.state.loading) return null;
+    if (!this.props.isFetching) return null;
 
     return (
       <View
@@ -81,8 +78,6 @@ class FeedScreen extends Component {
   }
 
   render() {
-
-    const noMeme = false //this.props.memes.length === 0
 
     const { selectedFilter, isFetching, lastUpdated } = this.props
 
@@ -98,26 +93,17 @@ class FeedScreen extends Component {
           <Picker.Item label="hot" value={MEME_FILTERS.HOT} />
           <Picker.Item label="new" value={MEME_FILTERS.NEW} />
         </Picker>
-        { noMeme ? (
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text>
-                No hay me-mes :(
-              </Text>
-            </View>
-          ) : (
-            <FlatList
-              data={this.props.memes}
-              numColumns={this.state.numColumns}
-              renderItem={(item) => { return this.renderImage(item.item) } }
-              ListFooterComponent={this.renderFooter}
-              refreshing={this.props.isRefreshing}
-              onRefresh={this.handleRefresh}
-              onEndReached={this.handleLoadMore}
-              onEndTreshold={0}
-              extraData={this.props.isFetching}
-            />
-          )
-        }
+        <FlatList
+          data={this.props.memes}
+          numColumns={this.state.numColumns}
+          renderItem={(item) => { return this.renderImage(item.item) } }
+          ListFooterComponent={this.renderFooter}
+          refreshing={this.props.isRefreshing}
+          onRefresh={this.handleRefresh}
+          onEndReached={this.handleLoadMore}
+          onEndTreshold={0}
+          extraData={this.props.isFetching}
+        />
       </Fragment>
     );
   }

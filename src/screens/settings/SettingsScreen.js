@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from 'react'
-import { Image, Text, Button, StyleSheet, View, FlatList } from 'react-native'
+import { Image, Text, StyleSheet, View, FlatList } from 'react-native'
+import { Button } from 'react-native-paper'
 import { connect } from "react-redux";
 import { logout } from '@redux/actions'
+import getEnvVars from 'me-me/environment'
 
 class SettingsScreen extends Component {
   
@@ -12,8 +14,9 @@ class SettingsScreen extends Component {
 
 
   makeRemoteRequest = () => {
-    const url = 'https://meemperrapi.herokuapp.com/user/stats'
-    const url2 = 'https://meemperrapi.herokuapp.com/user/best_memes'
+    const { apiUrl } = getEnvVars
+    const url = apiUrl + '/user/stats'
+    const url2 = apiUrl + '/user/best_memes'
     const jwt = this.props.jwt;
     fetch(url, {
       method: 'GET',
@@ -31,7 +34,7 @@ class SettingsScreen extends Component {
       console.log('settings error', error);
       return error;
     })
-    /*fetch(url2, {
+    fetch(url2, {
       method: 'GET',
       headers: {
         'Authorization': jwt
@@ -55,7 +58,7 @@ class SettingsScreen extends Component {
       console.log('Settings Infinite Scroll error', error)
       this.setState({ error, loading: false, refreshing: false});
       return error;
-    });*/
+    });
   }
 
   componentDidMount() {

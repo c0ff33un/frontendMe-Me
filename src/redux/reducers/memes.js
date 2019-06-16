@@ -42,6 +42,11 @@ function memes_(
         items: [...state.items, ...memes],
         lastUpdated: receivedAt
       })
+    case RECEIVE_MEMES_ERROR:
+      return Object.assign({}, state, {
+        isFetching: false,
+        isRefreshing: false
+      })
     case INCREASE_MEMES_PAGE:
       return Object.assign({}, state, {
         page: state.page + 1

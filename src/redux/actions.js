@@ -7,6 +7,7 @@ import {
   REQUEST_MEMES,
   INVALIDATE_MEMES,
   RECEIVE_MEMES,
+  RECEIVE_MEMES_ERROR,
   INCREASE_MEMES_PAGE,
   REQUEST_JWT,
   RECEIVE_JWT,
@@ -40,7 +41,7 @@ export function requestMemes(filter) {
   return { type: REQUEST_MEMES, payload: {filter} }
 }
 
-export function receiveMemes(filter, json) {
+function receiveMemes(filter, json) {
   return { type: RECEIVE_MEMES, 
     payload: {
       filter,
@@ -50,17 +51,24 @@ export function receiveMemes(filter, json) {
   }
 }
 
+function receiveMemesError() {
+  return { type: RECEIVE_MEMES_ERROR }
+}
+
 function fetchMemes(filter, page) {
   return dispatch => {
     dispatch(requestMemes(filter))
     const size = 8
-    const url = 'https://meemperrapi.herokuapp.com/memes/'+filter+`?page=${page}&per_page=${size}`
+    const { apiUrl } = getEnvVars
+    const url = apiUrl+'/memes/'+filter+`?page=${page}&per_page=${size}`
+    console.log(url)
     return fetch(url)
       .then(response => response.json())
       .then(json => dispatch(receiveMemes(filter, json)))
       .catch(error => {
         console.log("fetchMemes error")
         console.log(error)
+        dispatch(receiveMemesError())
         return error;
       })
   }
@@ -70,7 +78,7 @@ function shouldFetchMemes(state) {
   if( !state ) return true
   const { items, page } = state
   const length = items.length
-  if ( length <  page * 8 ) {
+  if ( length ==  (page - 1) * 8 ) {
     return true
   } else if (state.isFetching) {
     return false
