@@ -67,8 +67,8 @@ class FeedScreen extends Component {
   }
 
   renderFooter = () => {
-    console.log("renderFooter")
-    console.log(this.props.isFetching, this.state.loading)
+    // console.log("renderFooter")
+    // console.log(this.props.isFetching, this.state.loading)
     if (!this.props.isFetching && !this.state.loading) return null;
 
     return (
@@ -109,6 +109,7 @@ class FeedScreen extends Component {
               data={this.props.memes}
               numColumns={this.state.numColumns}
               renderItem={(item) => { return this.renderImage(item.item) } }
+              keyExtractor={(item, index) => index.toString()}
               ListFooterComponent={this.renderFooter}
               refreshing={this.props.isRefreshing}
               onRefresh={this.handleRefresh}

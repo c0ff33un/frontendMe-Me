@@ -48,6 +48,12 @@ class UserInput extends Component {
           textContent={"Cargando"}
           textStyle={styles.spinnerTextStyle}
           color={"#FF6B35"}
+          textStyle = {{
+              color: "white"
+          }}
+          overlayColor={"linear-gradient(#e66465, #9198e5)"}
+          animation={"fade"}
+          size={"large"}
         />
         <TextInput
           mode="outlined"

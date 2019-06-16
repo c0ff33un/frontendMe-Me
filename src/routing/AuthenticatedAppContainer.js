@@ -27,7 +27,7 @@ const MyBottomTabNavigator = createMaterialBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'Feed',
+    initialRouteName: 'Settings',
     activeColor: '#FF6B35'
   }
 );

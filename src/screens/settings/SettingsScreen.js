@@ -7,30 +7,43 @@ class SettingsScreen extends Component {
   
   state = {
     loggingOut: false,
-    stats: {}
+    stats: {},
+    info: {},
   }
 
 
-  makeRemoteRequest = () => {
+  makeRemoteRequest = async () => {
     const url = 'https://meemperrapi.herokuapp.com/user/stats'
-    const url2 = 'https://meemperrapi.herokuapp.com/user/best_memes'
+    const url2 = 'https://meemperrapi.herokuapp.com/user/memes'
+
     const jwt = this.props.jwt;
-    fetch(url, {
+
+    const options = {
       method: 'GET',
       headers: {
         'Authorization': jwt
       },
-    })
-    .then( res => res.json() )
-    .then( res => {
-      console.log('settings', res);
-      this.setState({ stats: res })
-      return res;
-    })
-    .catch(error => {
-      console.log('settings error', error);
-      return error;
-    })
+    }
+
+    const fetchStats = await fetch(url, options)
+    const fetchUserInfo = await fetch(url2,options)
+
+    Promise.all([fetchStats,fetchUserInfo])
+      .then( res => {
+        res[0].json().then(data => {
+          this.setState({stats:data})
+        }) 
+        res[1].json().then(data => {
+          this.setState({info:data})  
+        })
+      })
+      .catch(e => console.error(e))
+
+
+    // Promise.all([fetchStats, fetchUserInfo])
+    //   .then( response => JSON.parse(JSON.stringify(response,null,2)))
+    //   .then( data => console.log(data))
+    //   .catch(error => console.log('settings error', error))
     /*fetch(url2, {
       method: 'GET',
       headers: {
@@ -60,6 +73,7 @@ class SettingsScreen extends Component {
 
   componentDidMount() {
     this.makeRemoteRequest()
+    console.log(this.state.stats)
   }
 
   renderImage = (image) => {
@@ -76,6 +90,10 @@ class SettingsScreen extends Component {
     return (
       <Fragment>
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          {/* <ImageBackground source={this.state.stats.} style={{width: '100%', height: '100%'}}>
+            <Text>Inside</Text>
+          </ImageBackground> */}
+
           <Text> Control </Text>
           <Button 
             title="Logout"

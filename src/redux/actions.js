@@ -70,7 +70,7 @@ function shouldFetchMemes(state) {
   if( !state ) return true
   const { items, page } = state
   const length = items.length
-  if ( length <  page * 8 ) {
+  if ( length ==  (page-1) * 8 ) {
     return true
   } else if (state.isFetching) {
     return false
@@ -83,12 +83,7 @@ export function fetchMemesIfNeeded(filter) {
   return (dispatch, getState) => {
     const state = getState().memesByFilter[filter]
     if ( shouldFetchMemes(state) ) {
-      let page
-      if( state ) {
-        page = state.page
-      }else{
-        page = 1
-      }
+      let page = state ? state.page : 1;
       return dispatch(fetchMemes(filter, page))
     }
   }
@@ -146,14 +141,14 @@ export function login(email, password) {
         }
       })
     }
-    console.log('actions.js')
-    console.log(email, password)
-    console.log(options)
-    console.log(apiUrl)
+    // console.log('actions.js')
+    // console.log(email, password)
+    // console.log(options)
+    // console.log(apiUrl)
     return fetch(apiUrl + '/login', options)
       .then(response => {
         const { status } = response
-        console.log(response)
+        // console.log(response)
         if(status == 401) {
           dispatch(validateEmail())
         } else if (status == 201) {
