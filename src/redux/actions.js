@@ -60,7 +60,7 @@ function fetchMemes(filter, page) {
     dispatch(requestMemes(filter))
     const size = 8
     const { apiUrl } = getEnvVars
-    const url = apiUrl+'/memes/'+filter+`?page=${page}&per_page=${size}`
+    const url = `${apiUrl}/memes/${filter}?page=${page}&per_page=${size}`
     console.log(url)
     return fetch(url)
       .then(response => response.json())
@@ -91,12 +91,7 @@ export function fetchMemesIfNeeded(filter) {
   return (dispatch, getState) => {
     const state = getState().memesByFilter[filter]
     if ( shouldFetchMemes(state) ) {
-      let page
-      if( state ) {
-        page = state.page
-      }else{
-        page = 1
-      }
+      let page = state ? state.page : 1;
       return dispatch(fetchMemes(filter, page))
     }
   }
@@ -154,14 +149,14 @@ export function login(email, password) {
         }
       })
     }
-    console.log('actions.js')
-    console.log(email, password)
-    console.log(options)
-    console.log(apiUrl)
+    // console.log('actions.js')
+    // console.log(email, password)
+    // console.log(options)
+    // console.log(apiUrl)
     return fetch(apiUrl + '/login', options)
       .then(response => {
         const { status } = response
-        console.log(response)
+        // console.log(response)
         if(status == 401) {
           dispatch(validateEmail())
         } else if (status == 201) {

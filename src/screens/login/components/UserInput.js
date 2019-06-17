@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
-import { TextInput, Button, Text } from "react-native-paper";
+import { TextInput, Button, Text, DefaultTheme, DarkTheme} from "react-native-paper";
 import { connect } from "react-redux";
 import { login } from '@redux/actions'
 import Spinner from "react-native-loading-spinner-overlay";
-
+// import { Font } from 'expo';
+// import * as Font from 'expo-font';
 
 const colorTextInput = "#FF6B35";
 
@@ -37,7 +38,10 @@ class UserInput extends Component {
   }
 
   componentDidMount() {
-    this.setState({ email: "ialemusm@unal.edu.co", pass: "Ivan1234" });
+    this.setState({ email: "ialemusm@unal.edu.co", pass: "Ivan1234" });    
+    // Font.loadAsync({
+    //   'noto-sans': require('assets/fonts/NotoSans-Regular.ttf'),
+    // });
   }
 
   render() {
@@ -47,7 +51,13 @@ class UserInput extends Component {
           visible={this.props.isLoggingIn}
           textContent={"Cargando"}
           textStyle={styles.spinnerTextStyle}
-          color={"#FF6B35"}
+          color={"#F6BD60"}
+          textStyle = {{
+              color: "white"
+          }}
+          overlayColor={"rgba(39,39,39,1)"}
+          animation={"fade"}
+          size={"large"}
         />
         <TextInput
           mode="outlined"
@@ -55,9 +65,19 @@ class UserInput extends Component {
           error={this.state.error}
           style={styles.email}
           value={this.state.email}
-          selectionColor={colorTextInput}
-          underlineColorAndroid={colorTextInput}
           onChangeText={email => this.setState({ email })}
+          theme={{
+            ...DefaultTheme,
+            colors: {
+              ...DefaultTheme.colors,
+              primary: '#6290C3',
+              accent: '#272727',
+              background: '#FDFFFC',
+              text: '#272727',
+              disabled: '#FDFFFC',
+              placeholder: '#272727',
+            }
+          }}
         />
         <TextInput
           mode="outlined"
@@ -67,26 +87,65 @@ class UserInput extends Component {
           style={styles.pass}
           value={this.state.pass}
           onChangeText={pass => this.setState({ pass })}
+          theme={{
+            ...DefaultTheme,
+            colors: {
+              ...DefaultTheme.colors,
+              primary: '#6290C3',
+              accent: '#272727',
+              background: '#FDFFFC',
+              text: '#272727',
+              disabled: '#FDFFFC',
+              placeholder: '#272727',
+            }
+          }}
         />
         <View
           style={{ alignSelf: "flex-end", marginBottom: 20, marginRight: 9 }}
         >
-          <Text style={{ fontSize: 10 }}>¿Olvidaste tu contraseña?</Text>
+          <Text style={{ fontSize: 14, }} onPress={(e)=>{e.preventDefault(); this.props.navigation.navigate('SignUp')}}>¿Olvidaste tu contraseña?</Text>
         </View>
         <Button
           style={{ margin: 8 }}
-          color="#FF6B35"
-          mode="outlined"
+          mode="contained"
+          dark={true}
           title="Iniciar Sesión"
           onPress={this.handleLogin}
+          theme={{
+            ...DefaultTheme,
+            colors: {
+              primary: '#6290C3',
+              accent: '#F6BD60',
+              background: '#FDFFFC',
+              surface: '#FDFFFC',
+              text: '#FDFFFC',
+              disabled: '#FDFFFC',
+              placeholder: '#FDFFFC',
+              backdrop: '#FDFFFC',
+            }
+          }}
         >
           Iniciar Sesión
         </Button>
         <Button
             title="Sign Up"
             onPress={() => this.props.navigation.navigate('SignUp')}
+            dark={true}
+            theme={{
+              ...DefaultTheme,
+              colors: {
+                primary: '#6290C3',
+                accent: '#F6BD60',
+                background: '#FDFFFC',
+                surface: '#FDFFFC',
+                text: '#FDFFFC',
+                disabled: '#FDFFFC',
+                placeholder: '#FDFFFC',
+                backdrop: '#FDFFFC',
+              }
+            }}
           >
-            Sign Up
+            Regístrate
           </Button>
       </View>
     );
