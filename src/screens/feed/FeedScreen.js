@@ -1,104 +1,139 @@
 import React, { Fragment, Component } from "react";
-import { Image, Text, StyleSheet, View, FlatList } from "react-native";
+import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
 import { connect } from "react-redux";
+import getEnvVars from 'me-me/environment'
+import {
+  selectedFilter,
+  fetchMemesIfNeeded,
+  invalidateMemes,
+  setMemeFilter,
+  increaseMemesPageIfNeeded
+} from '@redux/actions'
+import { getMemesByFilter } from '@redux/selectors'
+import { MEME_FILTERS } from '@redux/actionTypes'
+import PropTypes from 'prop-types'
 
-function mapStateToProps(state) {
-  return {
-    jwt: state.jwt
-  };
-}
 class FeedScreen extends Component {
+
+
   constructor(props) {
     super(props);
 
     this.state = {
-      loading: false,
-      data: [],
-      page: 1,
       error: null,
-      refreshing: false
+      loading: false,
+      refreshing: false,
+      numColumns: 2
     };
   }
 
   componentDidMount() {
-    this.makeRemoteRequest();
+    const { dispatch, selectedFilter } = this.props
+    dispatch(fetchMemesIfNeeded(selectedFilter))
   }
 
-  makeRemoteRequest = () => {
-    const { page } = this.state;
-    const url = `https://meemperrapi.herokuapp.com/momazos/best?page=${page}&per_page=12`;
-    //const url = 'https://meemperrapi.herokuapp.com/pictures';
-    setTimeout(() => {
-      console.log('Loading Images');
-      this.setState({ loading: true }); 
-      fetch(url)
-      .then(res => res.json())
-      .then(res => {
-        images = res.map(elem => {
-          ans = { 'image': elem.img, 'key': ''+elem.id};
-          return ans;
-        });
-        if(this.state.page != 1){
-          images = [...this.state.data, ...images]
-        }
-        this.setState({
-          data: images,
-          error: res.error || null,
-          loading: false,
-          refreshing: false
-        });
-        console.log('Finished loading images');
-      })
-      .catch( error => {
-        console.log('Infinite Scroll error', error)
-        this.setState({ error, loading: false, refreshing: false});
-        return error;
-      });
-    }, 1500);
-    
+  componentDidUpdate(prevProps) {
+    if (this.props.selectedFilter !== prevProps.selectedFilter) {
+      const { dispatch, selectedFilter } = this.props
+      dispatch(fetchMemesIfNeeded(selectedFilter))
+    }
+  }
+
+  handleChange = (nextFilter) => {
+    const { dispatch } = this.props
+    dispatch(setMemeFilter(nextFilter))
+    dispatch(fetchMemesIfNeeded(nextFilter))
   }
 
   handleRefresh = () => {
-    this.setState(
-      {
-        page: 1,
-        refreshing: true
-      },
-      () => {
-        this.makeRemoteRequest();
-      }
-
-    );
+    const { dispatch, selectedFilter } = this.props
+    dispatch(invalidateMemes(selectedFilter))
+    dispatch(fetchMemesIfNeeded(selectedFilter))  
   }
 
   handleLoadMore = () => {
-    this.setState({
-      page: this.state.page + 1,
-      rereshing: true,
-    }, () => {
-      this.makeRemoteRequest();
-    })
+    this.setState({loading: true})
+    const { dispatch, selectedFilter } = this.props
+    dispatch(increaseMemesPageIfNeeded(selectedFilter))
+    dispatch(fetchMemesIfNeeded(selectedFilter)) 
   }
 
   renderImage = (image) => {
-    return <Image style={{width: 150, height: 150, flex: 1, borderWidth: 1, borderColor: 'black', alignSelf: 'stretch'}}source={{uri: `data:image/gif;base64,${image}`}}/>
+    return <Image style={{width: 150, height: 150, flex: 1, borderWidth: 1, borderColor: 'black', alignSelf: 'stretch'}}
+      source={{uri: image}}/>
+  }
+
+  renderFooter = () => {
+    console.log("renderFooter")
+    console.log(this.props.isFetching, this.state.loading)
+    if (!this.props.isFetching) return null;
+
+    return (
+      <View
+        style={{paddingVertical: 20, borderTopWidth: 1, borderColor: "#CED0CE"}}
+      >
+        <ActivityIndicator animating size="large" />
+      </View>
+    );
   }
 
   render() {
+
+    const { selectedFilter, isFetching, lastUpdated } = this.props
+
     return(
-      <FlatList
-        data={this.state.data}
-        numColumns={3}
-        renderItem={(elem) => {
-          return this.renderImage(elem.item.image)}
-        }
-        refreshing={this.state.refreshing}
-        onRefresh={this.handleRefresh}
-        onEndReached={this.handleLoadMore}
-        onEndTreshold={100}
-      />
+      <Fragment>
+        <Picker
+          selectedValue={selectedFilter}
+          style={{height: 50, width: 100}}
+          mode='dropdown'
+          onValueChange={this.handleChange}
+        >
+          <Picker.Item label="best" value={MEME_FILTERS.BEST} />
+          <Picker.Item label="hot" value={MEME_FILTERS.HOT} />
+          <Picker.Item label="new" value={MEME_FILTERS.NEW} />
+        </Picker>
+        <FlatList
+          data={this.props.memes}
+          numColumns={this.state.numColumns}
+          renderItem={(item) => { return this.renderImage(item.item) } }
+          keyExtractor={(item,index) => index.toString()}
+          ListFooterComponent={this.renderFooter}
+          refreshing={this.props.isRefreshing}
+          onRefresh={this.handleRefresh}
+          onEndReached={this.handleLoadMore}
+          onEndTreshold={0}
+          extraData={this.props.isFetching}
+        />
+      </Fragment>
     );
   }
 }
 
-export default connect(mapStateToProps)(FeedScreen);
+FeedScreen.propTypes = {
+  selectedFilter: PropTypes.string.isRequired,
+  memes: PropTypes.array.isRequired,
+  isFetching: PropTypes.bool.isRequired,
+  lastUpdated: PropTypes.number,
+  dispatch: PropTypes.func.isRequired
+}
+
+function mapStateToProps(state) {
+  const { selectedFilter, memesByFilter, session } = state
+  const { isFetching, isRefreshing, lastUpdated, items: memes } = memesByFilter[
+    selectedFilter
+  ] || {
+    isFetching: true,
+    isRefreshing: false,
+    items: []
+  }
+  return { 
+    selectedFilter,
+    memes,
+    isFetching,
+    isRefreshing,
+    lastUpdated  
+  }
+}
+
+export default connect(mapStateToProps)(FeedScreen)

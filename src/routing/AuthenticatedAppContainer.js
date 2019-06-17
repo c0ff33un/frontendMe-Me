@@ -27,8 +27,12 @@ const MyBottomTabNavigator = createMaterialBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'Feed',
-    activeColor: '#FF6B35'
+    initialRouteName: 'Settings',
+    activeColor: '#F6BD60',
+    barStyle:{
+      backgroundColor: '#272727',
+
+    }
   }
 );
 

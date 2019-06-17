@@ -7,9 +7,8 @@ import { connect } from "react-redux";
 
 class LoginScreen extends Component {
   render() {
-    console.log("Login", this.props);
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <Header />
         <UserInput navigation={this.props.navigation} />
         <SignUp navigation={this.props.navigation} />
@@ -20,7 +19,8 @@ class LoginScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'space-around',
   }
 });
 

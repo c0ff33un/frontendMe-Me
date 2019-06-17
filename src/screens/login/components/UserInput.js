@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
-import { TextInput, Button, Text } from "react-native-paper";
+import { TextInput, Button, Text, DefaultTheme, DarkTheme} from "react-native-paper";
 import { connect } from "react-redux";
+import { login } from '@redux/actions'
+import Spinner from "react-native-loading-spinner-overlay";
+// import { Font } from 'expo';
+// import * as Font from 'expo-font';
 
 const colorTextInput = "#FF6B35";
 
@@ -22,55 +26,58 @@ const validation = state => {
 
 class UserInput extends Component {
   state = {
-    user: "",
+    email: "",
     pass: "",
-    error: false
+    error: false,
+    loading: false
   };
 
-  addSession = jwt => {
-    this.props.dispatch({ type: "SET_SESSION_USER", jwt: jwt });
-  };
+  handleLogin = () => {
+    const { email, pass } = this.state
+    this.props.dispatch(login(email, pass))
+  }
 
-  login = () => {
-    var ans = fetch("https://meemperrapi.herokuapp.com/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        user: {
-          email: this.state.user,
-          password: this.state.pass
-        }
-      })
-    })
-      .then(response => {
-        var jwt = response.headers.map.authorization;
-
-        if (response.status == 401) {
-          this.props.navigation.navigate("ValidateEmail");
-        } else if (response.status == 201) {
-          this.addSession(jwt);
-          this.props.navigation.navigate("Feed");
-        }
-      })
-      //.then(res => res.headers.map["authorization"])
-      .catch(error => console.error("Error:", error));
-    //.then(response => console.log('Success:', response));
-  };
+  componentDidMount() {
+    this.setState({ email: "ialemusm@unal.edu.co", pass: "Ivan1234" });    
+    // Font.loadAsync({
+    //   'noto-sans': require('assets/fonts/NotoSans-Regular.ttf'),
+    // });
+  }
 
   render() {
     return (
-      <View style={{ flex: 2, justifyContent: "center" }}>
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <Spinner
+          visible={this.props.isLoggingIn}
+          textContent={"Cargando"}
+          textStyle={styles.spinnerTextStyle}
+          color={"#F6BD60"}
+          textStyle = {{
+              color: "white"
+          }}
+          overlayColor={"rgba(39,39,39,1)"}
+          animation={"fade"}
+          size={"large"}
+        />
         <TextInput
           mode="outlined"
-          label="Email o nombre de usuario"
+          label="Email"
           error={this.state.error}
           style={styles.email}
-          value={this.state.user}
-          selectionColor={colorTextInput}
-          underlineColorAndroid={colorTextInput}
-          onChangeText={user => this.setState({ user })}
+          value={this.state.email}
+          onChangeText={email => this.setState({ email })}
+          theme={{
+            ...DefaultTheme,
+            colors: {
+              ...DefaultTheme.colors,
+              primary: '#6290C3',
+              accent: '#272727',
+              background: '#FDFFFC',
+              text: '#272727',
+              disabled: '#FDFFFC',
+              placeholder: '#272727',
+            }
+          }}
         />
         <TextInput
           mode="outlined"
@@ -80,24 +87,74 @@ class UserInput extends Component {
           style={styles.pass}
           value={this.state.pass}
           onChangeText={pass => this.setState({ pass })}
+          theme={{
+            ...DefaultTheme,
+            colors: {
+              ...DefaultTheme.colors,
+              primary: '#6290C3',
+              accent: '#272727',
+              background: '#FDFFFC',
+              text: '#272727',
+              disabled: '#FDFFFC',
+              placeholder: '#272727',
+            }
+          }}
         />
         <View
           style={{ alignSelf: "flex-end", marginBottom: 20, marginRight: 9 }}
         >
-          <Text style={{ fontSize: 10 }}>¿Olvidaste tú contraseña?</Text>
+          <Text style={{ fontSize: 14, }} onPress={(e)=>{e.preventDefault(); this.props.navigation.navigate('SignUp')}}>¿Olvidaste tu contraseña?</Text>
         </View>
         <Button
           style={{ margin: 8 }}
-          color="#FF6B35"
-          mode="outlined"
+          mode="contained"
+          dark={true}
           title="Iniciar Sesión"
-          onPress={this.login}
+          onPress={this.handleLogin}
+          theme={{
+            ...DefaultTheme,
+            colors: {
+              primary: '#6290C3',
+              accent: '#F6BD60',
+              background: '#FDFFFC',
+              surface: '#FDFFFC',
+              text: '#FDFFFC',
+              disabled: '#FDFFFC',
+              placeholder: '#FDFFFC',
+              backdrop: '#FDFFFC',
+            }
+          }}
         >
           Iniciar Sesión
         </Button>
+        <Button
+            title="Sign Up"
+            onPress={() => this.props.navigation.navigate('SignUp')}
+            dark={true}
+            theme={{
+              ...DefaultTheme,
+              colors: {
+                primary: '#6290C3',
+                accent: '#F6BD60',
+                background: '#FDFFFC',
+                surface: '#FDFFFC',
+                text: '#FDFFFC',
+                disabled: '#FDFFFC',
+                placeholder: '#FDFFFC',
+                backdrop: '#FDFFFC',
+              }
+            }}
+          >
+            Regístrate
+          </Button>
       </View>
     );
   }
 }
 
-export default connect()(UserInput);
+const mapStateToProps = (state) => {
+  const { isLoggingIn } = state.session
+  return { isLoggingIn }
+}
+
+export default connect(mapStateToProps)(UserInput)

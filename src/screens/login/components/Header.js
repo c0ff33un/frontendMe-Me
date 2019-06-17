@@ -14,9 +14,10 @@ function Header(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 2,
+    flex: 1,
     marginTop: 20,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   image: {
     resizeMode: 'center',

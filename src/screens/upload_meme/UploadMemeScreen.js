@@ -1,44 +1,64 @@
 import React, { Component } from 'react'
-import { Button, Text, View, Image, Dimensions } from 'react-native'
-//import { Button } from 'react-native-paper'
+import { Text, View, Image, Dimensions } from 'react-native'
+import { Button } from 'react-native-paper'
 import { ImagePicker } from 'expo';
+import { connect } from "react-redux";
+import getEnvVars from 'me-me/environment'
 
 class UploadMemeScreen extends Component {
     state = {
         image: null,
-        base64: null,
         loading: false
     };
 
     handleChoosePhoto = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-          allowsEditing: false,
-          base64: true
+          allowsEditing: false
         });
 
+
         if (!result.cancelled) {
-          this.setState({ image: result.uri });
-          this.setState({ base64: result.base64.replace(/(?:\r\n|\r|\n)/g, '') });
+          this.setState({ image : result.uri });
         }
       };
 
     uploadMeme = () => {
         this.setState({ loading: true });
-        fetch('https://meemperrapi.herokuapp.com/users/4/memes', { //Cambiar cuando se guarde la sesión en Redux
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-            meme:{
-                picture_image: this.state.base64
-            }
-            })
+
+        const uri = this.state.image
+        let uriParts = uri.split('.')
+        let fileType = uriParts[uriParts.length - 1]
+
+        meme = new FormData();
+        meme.append('meme[image]', {
+          uri,
+          name: `image.${fileType}`,
+          type: `image/${fileType}`,
         })
+
+        const { apiUrl } = getEnvVars
+
+        let url = apiUrl + '/user/memes'
+
+        let options = {
+          method: 'POST',
+          body: meme,
+          headers: {
+            'Accept' : 'application/json',
+            'Authorization': this.props.jwt,
+            'Content-Type': 'multipart/form-data',
+          }
+        }
+    
+        fetch(url, options)
         .then(res => {
           this.setState({ loading: false });
           console.log('Sucess');
           return res.json();
+        })
+        .then(res => {
+          console.log(res)
+          return res
         })
         .catch(error => {
           this.setState({ loading: false });
@@ -53,10 +73,14 @@ class UploadMemeScreen extends Component {
 
         return (
             <View style={{flex: 1, justifyContent: 'center'}}>
-                {!image && <Button 
+                {!image && 
+                  <Button 
                     title="Choose photo"
                     onPress={this.handleChoosePhoto}
-                />}
+                  >
+                    Choose photo
+                  </Button>
+                }
                 {image &&
                   <Image 
                     source={{ uri: image }}
@@ -67,17 +91,19 @@ class UploadMemeScreen extends Component {
                 {image && 
                   <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                     <Button
-                      style={{flex: 1}}
                       title="Cambiar Me-Me"
                       onPress={this.handleChoosePhoto}
-                    />
+                    >
+                      Change meme
+                    </Button>
                     <Button
-                      style={{flex: 1}}
                       title="Subir Me-Me"
                       onPress={this.uploadMeme}
                       disabled={this.state.loading}
                       loading={this.state.loading}
-                    />   
+                    >
+                      Upload meme
+                    </Button>   
                   </View>
                 }
                 
@@ -86,4 +112,10 @@ class UploadMemeScreen extends Component {
     }
 }
 
-export default UploadMemeScreen
+function mapStateToProps(state) {
+  return {
+    jwt: state.session.jwt
+  };
+}
+
+export default connect(mapStateToProps)(UploadMemeScreen)
