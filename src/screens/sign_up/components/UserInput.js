@@ -1,40 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet,View,ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet,View,ScrollView, KeyboardAvoidingView, Image, TouchableHighlight } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import {Crypt, keyManager, RSA} from 'hybrid-crypto-js';
 import DatePicker from 'react-native-datepicker';
-import getEnvVars from 'me-me/environment'
+import getEnvVars from 'me-me/environment';
 
 const colorTextInput = "#FF6B35";
-
-const themes = {
-  ...DefaultTheme,
-  roundness: 2,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: '#2EC4B6',
-    accent: '#FDFFFC',
-    background : "#272727"
-  }
-}; 
-
-const styles = {
-  input:{
-    border: 20,
-    margin: 8,
-    background: "#272727"
-  },
-  error: {
-    color: "#272727",
-    fontStyle: "italic"
-  },
-  container:{
-    flex: 1
-  }
-}
-
-
 
 function randomStringGenerator(){
   var length           = Math.floor(Math.random() * 45);
@@ -111,6 +83,8 @@ export default class UserInput extends Component {
         this.props.navigation.navigate('ValidateEmail');
       } else {
         console.log('Error:', response)
+        this.setState({ loading: false });
+
       }
     })
     .catch( error => {
@@ -217,14 +191,14 @@ export default class UserInput extends Component {
           </View>
           {/* Se debe utilizar date picker */}
           <DatePicker
-            style={{ margin: 8}}
+            style={{ margin: 10, width: 'auto'}}
             date={this.state.birthday}
             mode="date"
-            placeholder="select date"
+            placeholder="Fecha de nacimiento"
             format="YYYY-MM-DD"
             minDate="1919-05-01"
             confirmBtnText="Confirmar"
-            cancelBtnText="Cancel"
+            cancelBtnText="Cancelar"
             customStyles={{
               dateIcon: {
                 width:0,
@@ -234,7 +208,6 @@ export default class UserInput extends Component {
                 height: 30,
                 width: 400 
               }
-              // ... You can check the source to find the other keys.
             }}
             onDateChange={birthday => {this.setState({birthday: birthday}); this.validate("birthday", birthday) } }
           />
@@ -293,19 +266,97 @@ export default class UserInput extends Component {
           {this.state.errorRePass ? 
           <View style={{marginLeft: 8}}><Text style={styles.error} theme={themes}> Las contraseñas no coinciden </Text></View> :
           null }
+
+          <View style={{marginLeft: 8}}>
+            <Text>Escoge tu avatar</Text>
+          </View>
+          <View style={styles.imagesContainer}>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+            >
+              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+                <Image style={styles.image} source={require("assets/img/elon.jpg")}/>
+              </TouchableHighlight>
+              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+                <Image style={styles.image} source={require("assets/img/ugandanknuck.jpg")}/>
+              </TouchableHighlight>
+              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+                <Image style={styles.image} source={require("assets/img/harambe.jpg")}/>
+              </TouchableHighlight>
+              <TouchableHighlight activeOpacity={0.5} underlayColor="black" onPress={() => console.log(this)}>
+                <Image style={styles.image} source={require("assets/img/elon.jpg")}/>
+              </TouchableHighlight>
+              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+                <Image style={styles.image} source={require("assets/img/harambe.jpg")}/>
+              </TouchableHighlight>
+              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+                <Image style={styles.image} source={require("assets/img/ugandanknuck.jpg")}/>
+              </TouchableHighlight>
+              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+                <Image style={styles.image} source={require("assets/img/harambe.jpg")}/>
+              </TouchableHighlight>
+              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+                <Image style={styles.image} source={require("assets/img/elon.jpg")}/>
+              </TouchableHighlight>
+              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+                <Image style={styles.image} source={require("assets/img/ugandanknuck.jpg")}/>
+              </TouchableHighlight>
+ 
+              
+            </ScrollView>
+          </View>
         
           <Button 
             style={ {margin: 8} } 
-            color="#FF6B35" 
             mode="outlined" 
             title="Registrarse" 
             onPress = {this.signUp}
             disabled = {this.state.loading}
             loading = {this.state.loading}
+            theme={themes}
           > 
             Registrarse 
           </Button>
         </View>
     )
+  }
+}
+
+const themes = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#6290C3',
+    accent: '#272727',
+    background: '#FDFFFC',
+    text: '#272727',
+    disabled: '#FDFFFC',
+    placeholder: '#272727',
+  }
+}
+
+const styles = {
+  input:{
+    border: 20,
+    margin: 8,
+    background: "#272727"
+  },
+  error: {
+    color: "red",
+    fontStyle: "italic"
+  },
+  container:{
+    flex: 1
+  },
+  imagesContainer:{
+    flexDirection:'row', 
+    marginTop: 10,
+    justifyContent:'space-between'
+  },
+  image:{
+    width: 100,
+    height: 100,  
+    borderRadius: 100
   }
 }

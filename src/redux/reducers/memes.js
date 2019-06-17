@@ -5,6 +5,7 @@ import {
   INVALIDATE_MEMES,
   REQUEST_MEMES,
   RECEIVE_MEMES,
+  RECEIVE_MEMES_ERROR,
   INCREASE_MEMES_PAGE
 } from '../actionTypes'
 

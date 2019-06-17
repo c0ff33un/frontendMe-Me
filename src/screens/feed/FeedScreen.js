@@ -97,6 +97,7 @@ class FeedScreen extends Component {
           data={this.props.memes}
           numColumns={this.state.numColumns}
           renderItem={(item) => { return this.renderImage(item.item) } }
+          keyExtractor={(item,index) => index.toString()}
           ListFooterComponent={this.renderFooter}
           refreshing={this.props.isRefreshing}
           onRefresh={this.handleRefresh}

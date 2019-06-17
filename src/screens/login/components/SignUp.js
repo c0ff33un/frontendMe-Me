@@ -3,7 +3,9 @@ import { Text, View, Link } from "react-native";
 import { Button } from "react-native-paper";
 import { SocialIcon } from "react-native-elements";
 import getEnvVars from "me-me/environment";
-import { Google, Facebook, AuthSession } from "expo";
+import { Google, /*Facebook,*/ AuthSession } from "expo";
+import * as Facebook from 'expo-facebook'; 
+import { connect } from "react-redux";
 
 class SignUp extends Component {
   state = {
@@ -95,7 +97,7 @@ class SignUp extends Component {
         <SocialIcon
           button
           type="facebook"
-          onPress={this.facebookLogIn}
+          onPress={e => this.facebookLogIn(e)}
           style={{flex: 2}}
           light
           type='facebook'
@@ -113,4 +115,9 @@ class SignUp extends Component {
   }
 }
 
-export default SignUp;
+const mapStateToProps = (state) => {
+  const { isLoggingIn } = state.session
+  return { isLoggingIn }
+}
+
+export default connect(mapStateToProps)(SignUp);

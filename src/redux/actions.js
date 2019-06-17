@@ -60,7 +60,7 @@ function fetchMemes(filter, page) {
     dispatch(requestMemes(filter))
     const size = 8
     const { apiUrl } = getEnvVars
-    const url = apiUrl+'/memes/'+filter+`?page=${page}&per_page=${size}`
+    const url = `${apiUrl}/memes/${filter}?page=${page}&per_page=${size}`
     console.log(url)
     return fetch(url)
       .then(response => response.json())
