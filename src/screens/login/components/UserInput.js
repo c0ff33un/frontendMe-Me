@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput, Button, Text, DefaultTheme, DarkTheme} from "react-native-paper";
 import { connect } from "react-redux";
-import { login } from '@redux/actions'
+import { login } from '@redux/actions';
 import Spinner from "react-native-loading-spinner-overlay";
 // import { Font } from 'expo';
 // import * as Font from 'expo-font';

@@ -132,6 +132,13 @@ function receiveJWTError() {
   return { type: RECEIVE_JWT_ERROR }
 }
 
+export function loginWithJWT(jwt){
+  return (dispatch) => {
+    if(jwt) return dispatch(receiveJWT(jwt))
+    else return dispatch(receiveJWTError())
+  }
+}
+
 export function login(email, password) {
   return (dispatch) => {
     dispatch(requestJWT())

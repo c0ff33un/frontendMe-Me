@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, View, Image, Dimensions } from 'react-native'
 import { Button } from 'react-native-paper'
-import { ImagePicker } from 'expo';
+import * as ImagePicker from 'expo-image-picker';
 import { connect } from "react-redux";
 import getEnvVars from 'me-me/environment'
 
