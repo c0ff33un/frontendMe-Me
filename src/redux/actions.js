@@ -45,7 +45,7 @@ function receiveMemes(filter, json) {
   return { type: RECEIVE_MEMES, 
     payload: {
       filter,
-      memes: json.map(response => { return response.img }),
+      memes: json.map(response => { return response.thumbnail }),
       receivedAt: Date.now()
     } 
   }

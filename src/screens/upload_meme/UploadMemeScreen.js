@@ -4,6 +4,10 @@ import { Button } from 'react-native-paper'
 import * as ImagePicker from 'expo-image-picker';
 import { connect } from "react-redux";
 import getEnvVars from 'me-me/environment'
+// const vision = require('@google-cloud/vision');
+// Creates a client
+// const client = new vision.ImageAnnotatorClient();
+
 
 class UploadMemeScreen extends Component {
     state = {
@@ -22,10 +26,26 @@ class UploadMemeScreen extends Component {
         }
       };
 
-    uploadMeme = () => {
+    uploadMeme = async () => {
         this.setState({ loading: true });
 
         const uri = this.state.image
+        
+        /**
+         * TODO(developer): Uncomment the following line before running the sample.
+         */
+        // const fileName = 'Local image file, e.g. /path/to/image.png';
+
+        // Performs safe search detection on the local file
+        // const [result] = await client.safeSearchDetection(uri);
+        // const detections = result.safeSearchAnnotation;
+        // console.log('Safe search:');
+        // console.log(`Adult: ${detections.adult}`);
+        // console.log(`Medical: ${detections.medical}`);
+        // console.log(`Spoof: ${detections.spoof}`);
+        // console.log(`Violence: ${detections.violence}`);
+        // console.log(`Racy: ${detections.racy}`);
+
         let uriParts = uri.split('.')
         let fileType = uriParts[uriParts.length - 1]
 
@@ -38,9 +58,9 @@ class UploadMemeScreen extends Component {
 
         const { apiUrl } = getEnvVars
 
-        let url = apiUrl + '/user/memes'
+        const url = `${apiUrl}/user/memes`
 
-        let options = {
+        const options = {
           method: 'POST',
           body: meme,
           headers: {

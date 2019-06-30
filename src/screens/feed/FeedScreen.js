@@ -59,7 +59,7 @@ class FeedScreen extends Component {
   }
 
   renderImage = (image) => {
-    return <Image style={{width: 150, height: 150, flex: 1, borderWidth: 1, borderColor: 'black', alignSelf: 'stretch'}}
+    return <Image style={{width: 240, height: 240, flex: 1, borderWidth: 1, borderColor: 'black', alignSelf: 'stretch'}}
       source={{uri: image}}/>
   }
 

@@ -3,7 +3,7 @@ import { Text, View, Linking } from "react-native";
 import { Button } from "react-native-paper";
 import { SocialIcon } from "react-native-elements";
 import getEnvVars from "me-me/environment";
-import { Google, /*Facebook,*/ AuthSession } from "expo";
+import { Google, /*Facebook,*/ /*AuthSession*/ } from "expo";
 import * as Facebook from 'expo-facebook'; 
 import { connect } from "react-redux";
 import { loginWithJWT } from '@redux/actions';
@@ -17,7 +17,7 @@ class SignUp extends Component {
     // e.preventDefault()
 
     const {facebookURL} = getEnvVars
-
+    this.setState({ loading: true });
     // Linking.openURL(facebookURL)
 
     try {
@@ -67,40 +67,52 @@ class SignUp extends Component {
 
   googleLogIn = async () => {
     try{
-      const { apiUrl, webClientId } = getEnvVars;
+      const { apiUrl, androidClientId } = getEnvVars;
       
       this.setState({ loading: true });
-      let redirectUrl = AuthSession.getRedirectUrl()
-      console.log(webClientId)
-      console.log(getEnvVars)
-      let result = await AuthSession.startAsync({
-        authUrl:
-          `https://accounts.google.com/o/oauth2/v2/auth?` +
-          `&client_id=${webClientId}` +
-          `&redirect_uri=${encodeURIComponent(redirectUrl)}`+
-          `&response_type=code` +
-          `&access_type=offline` +
-          `&scope=${encodeURIComponent('email profile')}`,
-      })
+      // let redirectUrl = AuthSession.getRedirectUrl()
+      const config = {
+        androidClientId,
+        // behavior: 'system',
+        scope: ['profile', 'email', 'plus_me']
 
-      console.log(result)
+      }
 
-      if(result.type === 'success') {
+      // console.log(webClientId)
+      // console.log(getEnvVars)
+      // let result = await AuthSession.startAsync({
+      //   authUrl:
+      //     `https://accounts.google.com/o/oauth2/v2/auth?` +
+      //     `&client_id=${webClientId}` +
+      //     `&redirect_uri=${encodeURIComponent(redirectUrl)}`+
+      //     `&response_type=code` +
+      //     `&access_type=offline` +
+      //     `&scope=${encodeURIComponent('email profile')}`,
+      // })
+      const result = await Google.logInAsync(config);
+      // console.log(result)
+      const { type, accessToken, user } = result;
+      if(type === 'success') {
         
         const options = {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(result)
+          body: JSON.stringify({oauth_token:accessToken})
         }
 
-        console.log('options:', options)
-        fetch(apiUrl + '/auth/google_oauth2/callback',
+        // console.log('options:', options)
+        fetch(apiUrl + '/auth/google',
         options)
-        .then(response => response.json())
+        .then(response => {
+          response.json()
+          
+          const jwt = response.headers.map.authorization;
+          this.props.dispatch(loginWithJWT(jwt))
+        })
         .then(json => {
-          console.log('json response:', json)
+          // console.log('json response:', json)
           this.setState({ loading: false })
           return json
         })
