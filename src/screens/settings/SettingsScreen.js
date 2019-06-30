@@ -1,9 +1,19 @@
 import React, { Component, Fragment } from "react";
-import { Image, Text, StyleSheet, View, FlatList } from "react-native";
+import {
+  Image,
+  Text,
+  StyleSheet,
+  View,
+  FlatList,
+  Modal,
+  Dimensions
+} from "react-native";
 import { Button, DefaultTheme } from "react-native-paper";
 import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
 import { logout } from "@redux/actions";
+import PureChart from "react-native-pure-chart";
+
 import getEnvVars from "me-me/environment";
 
 class SettingsScreen extends Component {
@@ -11,8 +21,13 @@ class SettingsScreen extends Component {
     loggingOut: false,
     stats: {},
     info: {},
-    data: []
+    data: [],
+    modalVisible: false
   };
+
+  setModalVisible(visible) {
+    this.setState({ modalVisible: visible });
+  }
 
   makeRemoteRequest = () => {
     const { apiUrl } = getEnvVars;
@@ -79,6 +94,31 @@ class SettingsScreen extends Component {
   };
 
   render() {
+    let sampleData = [
+      { x: "2018-01-01", y: 30 },
+      { x: "2018-01-02", y: 200 },
+      { x: "2018-01-03", y: 170 },
+      { x: "2018-01-04", y: 250 },
+      { x: "2018-01-05", y: 10 }
+    ];
+
+    let sampleData2 = [
+      {
+        value: 50,
+        label: "Marketing",
+        color: "red"
+      },
+      {
+        value: 40,
+        label: "Sales",
+        color: "blue"
+      },
+      {
+        value: 25,
+        label: "Support",
+        color: "green"
+      }
+    ];
     return (
       <Fragment>
         <View style={{ flex: 2, flexDirection: "row" }}>
@@ -129,7 +169,8 @@ class SettingsScreen extends Component {
               name="md-stats"
               type="ionicon"
               color="#F6BD60"
-              size={30}
+              size={20}
+              onPress={() => this.setModalVisible(true)}
             />
           </View>
         </View>
@@ -150,6 +191,7 @@ class SettingsScreen extends Component {
         >
           Logout
         </Button>
+
         <View style={{ flex: 10 }}>
           <FlatList
             data={this.state.data}
@@ -160,6 +202,26 @@ class SettingsScreen extends Component {
             refreshing={this.state.refreshing}
           />
         </View>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+          }}
+        >
+          <Icon
+            reverse
+            name="md-close"
+            type="ionicon"
+            color="#F6BD60"
+            size={15}
+            onPress={() => this.setModalVisible(false)}
+          />
+
+          <PureChart data={sampleData} type="line" />
+          <PureChart data={sampleData2} type="pie" />
+        </Modal>
       </Fragment>
     );
   }
@@ -197,6 +259,20 @@ const styles = StyleSheet.create({
   },
   avatar: {
     flex: 1
+  },
+  modal: {
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  modal2: {
+    height: 230,
+    backgroundColor: "#3B5998"
+  },
+
+  modal3: {
+    height: 300,
+    width: 300
   }
 });
 
