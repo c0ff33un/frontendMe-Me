@@ -39,18 +39,18 @@ class SettingsScreen extends Component {
     const options = {
       method: "GET",
       headers: {
-        'Authorization': jwt,
-        'Accept': 'application/json',
-      },
-    }
+        Authorization: jwt,
+        Accept: "application/json"
+      }
+    };
 
     const fetchUserInfo = fetch(url, options);
     const fetchStats = fetch(url3, options);
     const fetchUserMemes = fetch(url2, options);
 
-    Promise.all([ fetchUserMemes, fetchUserInfo, fetchStats])
-      .then( res => {
-        Promise.all([res[0].json(),res[1].json(),res[2].json()])
+    Promise.all([fetchUserMemes, fetchUserInfo, fetchStats])
+      .then(res => {
+        Promise.all([res[0].json(), res[1].json(), res[2].json()])
           .then(data => {
             const images = data[0].map(elem => {
               return {
@@ -61,10 +61,10 @@ class SettingsScreen extends Component {
             this.setState({
               data: images,
               info: data[1],
-              stats: data[2],
-            })
-          }) 
-          .catch(e => console.error(e))
+              stats: data[2]
+            });
+          })
+          .catch(e => console.error(e));
       })
       .catch(e => console.error(e));
   };

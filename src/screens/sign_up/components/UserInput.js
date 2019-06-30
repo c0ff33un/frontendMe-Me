@@ -318,42 +318,68 @@ export default class UserInput extends Component {
         <View style={{ marginLeft: 8 }}>
           <Text>Escoge tu avatar</Text>
         </View>
-        {/* <View style={styles.imagesContainer}>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
+        <View style={styles.imagesContainer}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+              <Image
+                style={styles.image}
+                source={require("assets/img/elon.jpg")}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+              <Image
+                style={styles.image}
+                source={require("assets/img/ugandanknuck.jpg")}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+              <Image
+                style={styles.image}
+                source={require("assets/img/harambe.jpg")}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight
+              activeOpacity={0.5}
+              underlayColor="black"
+              onPress={() => console.log(this)}
             >
-              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-                <Image style={styles.image} source={require("assets/img/elon.jpg")}/>
-              </TouchableHighlight>
-              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-                <Image style={styles.image} source={require("assets/img/ugandanknuck.jpg")}/>
-              </TouchableHighlight>
-              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-                <Image style={styles.image} source={require("assets/img/harambe.jpg")}/>
-              </TouchableHighlight>
-              <TouchableHighlight activeOpacity={0.5} underlayColor="black" onPress={() => console.log(this)}>
-                <Image style={styles.image} source={require("assets/img/elon.jpg")}/>
-              </TouchableHighlight>
-              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-                <Image style={styles.image} source={require("assets/img/harambe.jpg")}/>
-              </TouchableHighlight>
-              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-                <Image style={styles.image} source={require("assets/img/ugandanknuck.jpg")}/>
-              </TouchableHighlight>
-              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-                <Image style={styles.image} source={require("assets/img/harambe.jpg")}/>
-              </TouchableHighlight>
-              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-                <Image style={styles.image} source={require("assets/img/elon.jpg")}/>
-              </TouchableHighlight>
-              <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-                <Image style={styles.image} source={require("assets/img/ugandanknuck.jpg")}/>
-              </TouchableHighlight>
- 
-              
-            </ScrollView>
-          </View> */}
+              <Image
+                style={styles.image}
+                source={require("assets/img/elon.jpg")}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+              <Image
+                style={styles.image}
+                source={require("assets/img/harambe.jpg")}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+              <Image
+                style={styles.image}
+                source={require("assets/img/ugandanknuck.jpg")}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+              <Image
+                style={styles.image}
+                source={require("assets/img/harambe.jpg")}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+              <Image
+                style={styles.image}
+                source={require("assets/img/elon.jpg")}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+              <Image
+                style={styles.image}
+                source={require("assets/img/ugandanknuck.jpg")}
+              />
+            </TouchableHighlight>
+          </ScrollView>
+        </View>
 
         <Button
           style={{ margin: 8 }}
