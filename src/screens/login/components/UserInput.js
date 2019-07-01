@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput, Button, Text, DefaultTheme, DarkTheme} from "react-native-paper";
 import { connect } from "react-redux";
-import { login } from '@redux/actions'
+import { login } from '@redux/actions';
 import Spinner from "react-native-loading-spinner-overlay";
 // import { Font } from 'expo';
 // import * as Font from 'expo-font';
@@ -29,22 +29,30 @@ class UserInput extends Component {
     email: "",
     pass: "",
     error: false,
+    firstError: false,
     loading: false
   };
 
   handleLogin = () => {
+    this.setState({ firstError: true })
     const { email, pass } = this.state
     this.props.dispatch(login(email, pass))
   }
 
   componentDidMount() {
     this.setState({ email: "ialemusm@unal.edu.co", pass: "Ivan1234" });    
+
     // Font.loadAsync({
     //   'noto-sans': require('assets/fonts/NotoSans-Regular.ttf'),
     // });
   }
 
   render() {
+
+    if (this.props.loginError && this.state.firstError) {
+      alert("Login error")
+    }
+
     return (
       <View style={{ flex: 1, justifyContent: "center" }}>
         <Spinner
@@ -106,7 +114,6 @@ class UserInput extends Component {
           <Text style={{ fontSize: 14, }} onPress={(e)=>{e.preventDefault(); this.props.navigation.navigate('SignUp')}}>¿Olvidaste tu contraseña?</Text>
         </View>
         <Button
-          style={{ margin: 8 }}
           mode="contained"
           dark={true}
           title="Iniciar Sesión"
@@ -153,8 +160,8 @@ class UserInput extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { isLoggingIn } = state.session
-  return { isLoggingIn }
+  const { isLoggingIn, jwt, loginError } = state.session
+  return { isLoggingIn, jwt, loginError }
 }
 
 export default connect(mapStateToProps)(UserInput)

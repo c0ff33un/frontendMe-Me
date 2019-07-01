@@ -1,20 +1,33 @@
 import React, { Fragment, Component } from "react";
-import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
+import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator, Dimensions, TouchableHighlight } from "react-native";
 import { connect } from "react-redux";
 import getEnvVars from 'me-me/environment'
 import {
-  selectedFilter,
-  fetchMemesIfNeeded,
+  fetchMemes,
   invalidateMemes,
   setMemeFilter,
   increaseMemesPageIfNeeded
 } from '@redux/actions'
-import { getMemesByFilter } from '@redux/selectors'
+import { getMemesByIds } from '@redux/selectors'
 import { MEME_FILTERS } from '@redux/actionTypes'
 import PropTypes from 'prop-types'
 
-class FeedScreen extends Component {
 
+const numColumns = 3;
+
+const formatData = (data, numColumns) => {
+  let numberOfElementsLastRow = data.length % numColumns;
+  console.log('numberOfELementsLastRow'+numberOfElementsLastRow);
+  /*while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
+    console.log('here')
+    data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true});
+    numberOfElementsRow = numberOfElementsLastRow + 1;
+  }*/
+  console.log('formatDataEnd')
+  return data;
+}
+
+class FeedScreen extends Component {
 
   constructor(props) {
     super(props);
@@ -22,50 +35,40 @@ class FeedScreen extends Component {
     this.state = {
       error: null,
       loading: false,
-      refreshing: false,
-      numColumns: 2
+      refreshing: false
     };
   }
 
   componentDidMount() {
     const { dispatch, selectedFilter } = this.props
-    dispatch(fetchMemesIfNeeded(selectedFilter))
+    dispatch(fetchMemes(selectedFilter, numColumns))
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.selectedFilter !== prevProps.selectedFilter) {
       const { dispatch, selectedFilter } = this.props
-      dispatch(fetchMemesIfNeeded(selectedFilter))
+      dispatch(fetchMemes(selectedFilter, numColumns))
     }
   }
 
   handleChange = (nextFilter) => {
     const { dispatch } = this.props
     dispatch(setMemeFilter(nextFilter))
-    dispatch(fetchMemesIfNeeded(nextFilter))
+    dispatch(fetchMemes(nextFilter, numColumns))
   }
 
   handleRefresh = () => {
     const { dispatch, selectedFilter } = this.props
     dispatch(invalidateMemes(selectedFilter))
-    dispatch(fetchMemesIfNeeded(selectedFilter))  
+    dispatch(fetchMemes(selectedFilter, numColumns))
   }
 
   handleLoadMore = () => {
-    this.setState({loading: true})
     const { dispatch, selectedFilter } = this.props
-    dispatch(increaseMemesPageIfNeeded(selectedFilter))
-    dispatch(fetchMemesIfNeeded(selectedFilter)) 
-  }
-
-  renderImage = (image) => {
-    return <Image style={{width: 150, height: 150, flex: 1, borderWidth: 1, borderColor: 'black', alignSelf: 'stretch'}}
-      source={{uri: image}}/>
+    dispatch(fetchMemes(selectedFilter, numColumns)) 
   }
 
   renderFooter = () => {
-    console.log("renderFooter")
-    console.log(this.props.isFetching, this.state.loading)
     if (!this.props.isFetching) return null;
 
     return (
@@ -76,6 +79,21 @@ class FeedScreen extends Component {
       </View>
     );
   }
+
+  renderItem = ({item, index}) => {
+    if (item.empty === true) {
+      return <View style={[styles.item, styles.itemInvisible]} />
+    }
+    return (
+      <TouchableHighlight style={{flex: 1}}onPress={(e)=>this.props.navigation.navigate('Post')}>
+        <Image 
+          style={styles.item}
+          source={{uri: item}}
+        />
+      </TouchableHighlight>
+    );
+  }
+
 
   render() {
 
@@ -94,9 +112,10 @@ class FeedScreen extends Component {
           <Picker.Item label="new" value={MEME_FILTERS.NEW} />
         </Picker>
         <FlatList
-          data={this.props.memes}
-          numColumns={this.state.numColumns}
-          renderItem={(item) => { return this.renderImage(item.item) } }
+          style={styles.container}
+          data={formatData(this.props.memes, numColumns)}
+          numColumns={numColumns}
+          renderItem={this.renderItem}
           keyExtractor={(item,index) => index.toString()}
           ListFooterComponent={this.renderFooter}
           refreshing={this.props.isRefreshing}
@@ -118,16 +137,39 @@ FeedScreen.propTypes = {
   dispatch: PropTypes.func.isRequired
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginVertical: 20,
+  },
+  item: {
+    backgroundColor: '#4D243D',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    margin: 1,
+    height: Dimensions.get('window').width / numColumns
+  },
+  itemInvisible: {
+    backgroundColor: 'transparent',
+  }
+})
+
 function mapStateToProps(state) {
+  // 👌
   const { selectedFilter, memesByFilter, session } = state
-  const { isFetching, isRefreshing, lastUpdated, items: memes } = memesByFilter[
+  const { isFetching, page, isRefreshing, lastUpdated, allIds } = memesByFilter[
     selectedFilter
   ] || {
     isFetching: true,
     isRefreshing: false,
-    items: []
+    allIds: []
   }
+
+  const memes = getMemesByIds(state, allIds)
+
   return { 
+    page,
     selectedFilter,
     memes,
     isFetching,
