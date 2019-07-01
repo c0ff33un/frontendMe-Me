@@ -35,6 +35,9 @@ class UserInput extends Component {
   handleLogin = () => {
     const { email, pass } = this.state
     this.props.dispatch(login(email, pass))
+    if (!this.props.jwt) {
+      alert("Check your credentials")
+    }
   }
 
   componentDidMount() {
@@ -152,8 +155,8 @@ class UserInput extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { isLoggingIn } = state.session
-  return { isLoggingIn }
+  const { isLoggingIn, jwt } = state.session
+  return { isLoggingIn, jwt }
 }
 
 export default connect(mapStateToProps)(UserInput)

@@ -60,111 +60,126 @@ export default class UserInput extends Component {
   signUp = () => {
     //var cryptoPass = encrypt(pass);
     this.setState({ loading: true })
-    const { apiUrl } = getEnvVars
-    console.log(apiUrl)
-    var ans = fetch(apiUrl + '/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user:{
-          handle: this.state.user,
-          email: this.state.email,
-          birthday: this.state.birthday,
-          password: this.state.pass
+
+    if (this.validateAll()) {
+      const { apiUrl } = getEnvVars
+      console.log(apiUrl)
+      var ans = fetch(apiUrl + '/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user:{
+            handle: this.state.user,
+            email: this.state.email,
+            birthday: this.state.birthday,
+            password: this.state.pass
+          }
+        })
+      })
+      .then(response => {
+        if(response.ok){
+          console.log('Success', response);
+          this.setState({ loading: false });
+          this.props.navigation.navigate('ValidateEmail');
+        } else {
+          console.log('Error:', response)
+          this.setState({ loading: false });
+
         }
       })
-    })
-    .then(response => {
-      if(response.ok){
-        console.log('Success', response);
+      .catch( error => {
+        console.log(error)
         this.setState({ loading: false });
-        this.props.navigation.navigate('ValidateEmail');
-      } else {
-        console.log('Error:', response)
-        this.setState({ loading: false });
+        return error;
+      })
+    } else {
+      this.setState({ loading: false })
+    }
 
-      }
-    })
-    .catch( error => {
-      console.log(error)
-      this.setState({ loading: false });
-      return error;
-    })
-    console.log('what')
+      
+  }
+
+  validateAll = () => {
+    this.validate('email', this.state.email)
+    this.validate('user', this.state.user)
+    this.validate('birthday', this.state.birthday)
+    this.validate('password', this.state.pass)
+
+    return !(this.state.errorEmail && this.state.errorUser && this.state.errorDate && this.state.errorPass)
   }
 
   validate = (input,value) => {
-  switch(input){
-    case "email":
-      emailRestrictions = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    switch(input){
+      case "email":
+        emailRestrictions = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-      if(value){
-        if(value.match(emailRestrictions)) {
-          this.setState(() => ({ errorEmail: false }))
-        } else {
-          this.setState(() => ({ errorEmail: true }))
+        if(value){
+          if(value.match(emailRestrictions)) {
+            this.setState({ errorEmail: false })
+          } else {
+            this.setState({ errorEmail: true })
+          }
+        }else{
+          this.setState({ errorEmail: false })
         }
-      }else{
-        this.setState(() => ({ errorEmail: false }))
-      }
-      break;
+        break;
 
-    case "user":
-      usernameRestrictions = /^([a-zA-Z0-9]+)$/;
-          
-      if(value){
-        if( 5 <= value.length && value.length <= 20 && value.match(usernameRestrictions)) {
-          this.setState(() => ({ errorUser: false }))
-        } else {
-          this.setState(() => ({ errorUser: true }))
+      case "user":
+        usernameRestrictions = /^([a-zA-Z0-9]+)$/;
+            
+        if(value){
+          if( 5 <= value.length && value.length <= 20 && value.match(usernameRestrictions)) {
+            this.setState({ errorUser: false })
+          } else {
+            this.setState({ errorUser: true })
+          }
+        }else{
+          this.setState({ errorUser: false })
         }
-      }else{
-        this.setState(() => ({ errorUser: false }))
-      }
-      break;
+        break;
 
-    case "pass":
-      if(value){
-        if( 8 <= value.length && value.length <= 30) {
-            this.setState(() => ({ errorPass: false }))
-        } else {
-            this.setState(() => ({ errorPass: true }))
-          }
-      }else{
-        this.setState(() => ({ errorPass: false }))
-      }
-      break;
+      case "pass":
+        if(value){
+          if( 8 <= value.length && value.length <= 30) {
+              this.setState({ errorPass: false })
+          } else {
+              this.setState({ errorPass: true })
+            }
+        }else{
+          this.setState({ errorPass: false })
+        }
+        break;
 
-    case "repass":
-      if(value){
-        if( value == this.state.pass) {
-            this.setState(() => ({ errorRePass: false }))
-        } else {
-            this.setState(() => ({ errorRePass: true }))
-          }
-      }else{
-        this.setState(() => ({ errorRePass: false }))
-      }
-      break;
+      case "repass":
+        if(value){
+          if( value == this.state.pass) {
+              this.setState({ errorRePass: false })
+          } else {
+              this.setState({ errorRePass: true })
+            }
+        }else{
+          this.setState({ errorRePass: false })
+        }
+        break;
 
-    case "birthday":
-      if(value){
-        if( Number(value.substr(0,4)) < 2004 ) {
-            this.setState(() => ({ errorDate: false }))
-        } else {
+      case "birthday":
+        if(value){
+          if( Number(value.substr(0,4)) < 2004 ) {
+              this.setState({ errorDate: false })
+          } else {
 
-            this.setState(() => ({ errorDate: true }))
-          }
-      }else{
-        this.setState(() => ({ errorDate: false }))
-      }
-      break;
-    default:
-      break;
+              this.setState({ errorDate: true })
+            }
+        }else{
+          this.setState({ errorDate: false })
+        }
+        break;
+      default:
+        break;
+    }
   }
-}
 
   render() {
     return (

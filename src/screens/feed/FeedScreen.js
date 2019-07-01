@@ -41,10 +41,7 @@ class FeedScreen extends Component {
 
   componentDidMount() {
     const { dispatch, selectedFilter } = this.props
-    let i
-    for (i = 0; i < 5; ++i) {
-      dispatch(fetchMemes(selectedFilter, numColumns))
-    }
+    dispatch(fetchMemes(selectedFilter, numColumns))
   }
 
   componentDidUpdate(prevProps) {
@@ -70,7 +67,6 @@ class FeedScreen extends Component {
   }
 
   handleLoadMore = () => {
-    this.setState({loading: true})
     const { dispatch, selectedFilter } = this.props
     dispatch(fetchMemes(selectedFilter, numColumns)) 
   }
