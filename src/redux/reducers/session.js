@@ -21,6 +21,7 @@ function session(
         { isLoggingIn: true })
     case RECEIVE_JWT:
       const { jwt } = action.payload
+      console.log(jwt)
       return Object.assign({},
         state,
         {jwt, isLoggingIn: false})

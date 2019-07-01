@@ -12,6 +12,7 @@ import {
 import { getMemesByFilter } from '@redux/selectors'
 import { MEME_FILTERS } from '@redux/actionTypes'
 import PropTypes from 'prop-types'
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 class FeedScreen extends Component {
 
@@ -58,9 +59,12 @@ class FeedScreen extends Component {
     dispatch(fetchMemesIfNeeded(selectedFilter)) 
   }
 
-  renderImage = (image) => {
-    return <Image style={{width: 150, height: 150, flex: 1, borderWidth: 1, borderColor: 'black', alignSelf: 'stretch'}}
-      source={{uri: image}}/>
+  renderImage = (image, something) => {
+    console.log(something.index)
+    return  <TouchableHighlight onPress={(e)=>this.props.navigation.navigate('Post')}>
+              <Image style={{width: 240, height: 240, flex: 1, borderWidth: 1, borderColor: 'black', alignSelf: 'stretch'}}
+              source={{uri: image}}/>
+            </TouchableHighlight>
   }
 
   renderFooter = () => {
@@ -96,7 +100,7 @@ class FeedScreen extends Component {
         <FlatList
           data={this.props.memes}
           numColumns={this.state.numColumns}
-          renderItem={(item) => { return this.renderImage(item.item) } }
+          renderItem={(item) => { return this.renderImage(item.item,item) } }
           keyExtractor={(item,index) => index.toString()}
           ListFooterComponent={this.renderFooter}
           refreshing={this.props.isRefreshing}

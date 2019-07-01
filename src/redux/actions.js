@@ -45,7 +45,17 @@ function receiveMemes(filter, json) {
   return { type: RECEIVE_MEMES, 
     payload: {
       filter,
-      memes: json.map(response => { return response.img }),
+      memes: json.map(response => { return response.thumbnail }),
+      receivedAt: Date.now()
+    } 
+  }
+}
+
+function receiveComments(filter, json) {
+  return { type: RECEIVE_MEMES, 
+    payload: {
+      filter,
+      comments: json.map(response => { return response.thumbnail }),
       receivedAt: Date.now()
     } 
   }
@@ -132,6 +142,13 @@ function receiveJWTError() {
   return { type: RECEIVE_JWT_ERROR }
 }
 
+export function loginWithJWT(jwt){
+  return (dispatch) => {
+    if(jwt) return dispatch(receiveJWT(jwt))
+    else return dispatch(receiveJWTError())
+  }
+}
+
 export function login(email, password) {
   return (dispatch) => {
     dispatch(requestJWT())
@@ -175,4 +192,23 @@ export function login(email, password) {
 
 export function logout() {
   return { type: LOGOUT }
+}
+
+function fetchComments(id, page) {
+  return dispatch => {
+    dispatch(requestComments(id))
+    const size = 8
+    const { apiUrl } = getEnvVars
+    const url = `${apiUrl}/memes/${filter}?page=${page}&per_page=${size}`
+    // console.log(url)
+    return fetch(url)
+      .then(response => response.json())
+      .then(json => dispatch(receiveComments(filter, json)))
+      .catch(error => {
+        // console.log("fetchMemes error")
+        // console.log(error)
+        dispatch(receiveMemesError())
+        return error;
+      })
+  }
 }
