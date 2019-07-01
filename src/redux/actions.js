@@ -51,6 +51,16 @@ function receiveMemes(filter, json) {
   }
 }
 
+function receiveComments(filter, json) {
+  return { type: RECEIVE_MEMES, 
+    payload: {
+      filter,
+      comments: json.map(response => { return response.thumbnail }),
+      receivedAt: Date.now()
+    } 
+  }
+}
+
 function receiveMemesError() {
   return { type: RECEIVE_MEMES_ERROR }
 }
@@ -182,4 +192,23 @@ export function login(email, password) {
 
 export function logout() {
   return { type: LOGOUT }
+}
+
+function fetchComments(id, page) {
+  return dispatch => {
+    dispatch(requestComments(id))
+    const size = 8
+    const { apiUrl } = getEnvVars
+    const url = `${apiUrl}/memes/${filter}?page=${page}&per_page=${size}`
+    // console.log(url)
+    return fetch(url)
+      .then(response => response.json())
+      .then(json => dispatch(receiveComments(filter, json)))
+      .catch(error => {
+        // console.log("fetchMemes error")
+        // console.log(error)
+        dispatch(receiveMemesError())
+        return error;
+      })
+  }
 }

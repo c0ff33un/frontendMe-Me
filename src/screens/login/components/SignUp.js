@@ -16,7 +16,7 @@ class SignUp extends Component {
   facebookLogIn = async () => {
     // e.preventDefault()
 
-    const {facebookURL} = getEnvVars
+    const {apiUrl} = getEnvVars
     this.setState({ loading: true });
     // Linking.openURL(facebookURL)
 
@@ -39,9 +39,10 @@ class SignUp extends Component {
           body: JSON.stringify({oauth_token:token})
         }
         // Get the user's name using Facebook's Graph API
-        const res = await fetch(facebookURL,options)
+        const res = await fetch(`${apiUrl}/auth/facebook`,options)
         // console.log(res.headers.get('authorization'))
         const jwt = res.headers.map.authorization;
+        console.log(res)
         this.props.dispatch(loginWithJWT(jwt));
 
           // .then(res => {
@@ -59,6 +60,7 @@ class SignUp extends Component {
         // console.log(token);
       } else {
         // type === 'cancel'
+        console.error(`ERROR`)
       }
     } catch ({ message }) {
       alert(`Facebook Login Error: ${message}`);

@@ -54,7 +54,7 @@ class SettingsScreen extends Component {
           .then(data => {
             const images = data[0].map(elem => {
               return {
-                image: elem.img,
+                image: elem.thumbnail,
                 key: `${elem.id}`
               };
             });
