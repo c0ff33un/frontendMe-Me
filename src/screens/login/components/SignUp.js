@@ -58,7 +58,7 @@ class SignUp extends Component {
         // const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`,options)
         // console.log(token);
       } else {
-        // type === 'cancel'
+        this.setState({ loading: false });
       }
     } catch ({ message }) {
       alert(`Facebook Login Error: ${message}`);

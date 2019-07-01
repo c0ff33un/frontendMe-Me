@@ -106,7 +106,6 @@ class UserInput extends Component {
           <Text style={{ fontSize: 14, }} onPress={(e)=>{e.preventDefault(); this.props.navigation.navigate('SignUp')}}>¿Olvidaste tu contraseña?</Text>
         </View>
         <Button
-          style={{ margin: 8 }}
           mode="contained"
           dark={true}
           title="Iniciar Sesión"

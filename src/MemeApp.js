@@ -46,7 +46,6 @@ class MemeApp extends Component {
 const mapStateToProps = state => {
   const { jwt } = state.session
   const authenticated = jwt || false
-  console.log(`AUTH: ${authenticated}`)
   return { authenticated }
 };
 
