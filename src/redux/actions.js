@@ -64,6 +64,16 @@ function increaseMemesPage(filter) {
   return {type: INCREASE_MEMES_PAGE, payload: {filter} }
 }
 
+function receiveComments(filter, json) {
+  return { type: RECEIVE_MEMES, 
+    payload: {
+      filter,
+      comments: json.map(response => { return response.thumbnail }),
+      receivedAt: Date.now()
+    } 
+  }
+}
+
 export function fetchMemes(filter, size) {
   return (dispatch, getState) => {
     dispatch(requestMemes(filter))
@@ -135,20 +145,14 @@ export function login(email, password) {
       .then(response => {
         const { status } = response
         if(status == 401) {
-          return response.json()
+          dispatch(receiveJWTError("waat"))
         } else if (status == 201) {
           const jwt = response.headers.map.authorization
           dispatch(receiveJWT(jwt))
         } else {
-          dispatch(receiveJWTError("monda"))
+          dispatch(receiveJWTError("niggaa"))
         }
         return response
-      })
-      .then(json => {
-        console.log("##################")
-        console.log(json)
-        dispatch(receiveJWTError("waat"))
-        return json
       })
       .catch(error => {
         console.log(error)
@@ -160,4 +164,23 @@ export function login(email, password) {
 
 export function logout() {
   return { type: LOGOUT }
+}
+
+function fetchComments(id, page) {
+  return dispatch => {
+    dispatch(requestComments(id))
+    const size = 8
+    const { apiUrl } = getEnvVars
+    const url = `${apiUrl}/memes/${filter}?page=${page}&per_page=${size}`
+    // console.log(url)
+    return fetch(url)
+      .then(response => response.json())
+      .then(json => dispatch(receiveComments(filter, json)))
+      .catch(error => {
+        // console.log("fetchMemes error")
+        // console.log(error)
+        dispatch(receiveMemesError())
+        return error;
+      })
+  }
 }

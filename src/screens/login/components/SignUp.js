@@ -16,7 +16,7 @@ class SignUp extends Component {
   facebookLogIn = async () => {
     // e.preventDefault()
 
-    const {facebookURL} = getEnvVars
+    const {apiUrl} = getEnvVars
     this.setState({ loading: true });
     // Linking.openURL(facebookURL)
 
@@ -39,9 +39,10 @@ class SignUp extends Component {
           body: JSON.stringify({oauth_token:token})
         }
         // Get the user's name using Facebook's Graph API
-        const res = await fetch(facebookURL,options)
+        const res = await fetch(`${apiUrl}/auth/facebook`,options)
         // console.log(res.headers.get('authorization'))
         const jwt = res.headers.map.authorization;
+        console.log(res)
         this.props.dispatch(loginWithJWT(jwt));
 
           // .then(res => {
@@ -63,7 +64,7 @@ class SignUp extends Component {
     } catch ({ message }) {
       alert(`Facebook Login Error: ${message}`);
     }
-  }
+  };
 
   googleLogIn = async () => {
     try{
@@ -95,9 +96,9 @@ class SignUp extends Component {
       if(type === 'success') {
         
         const options = {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({oauth_token:accessToken})
         }
@@ -127,37 +128,45 @@ class SignUp extends Component {
     } catch ({ message }) {
       alert(`login: ${message}`);
       this.setState({ loading: false });
-    }    
-  }
+    }
+  };
 
   render() {
     return (
-      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-end', marginBottom: 10}}>
-        <View style={{flex: 1}} />
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "space-around",
+          alignItems: "flex-end",
+          marginBottom: 10
+        }}
+      >
+        <View style={{ flex: 1 }} />
         <SocialIcon
           button
           type="facebook"
           onPress={e => this.facebookLogIn(e)}
-          style={{flex: 2}}
+          style={{ flex: 2 }}
           light
-          type='facebook'
+          type="facebook"
         />
         <SocialIcon
-          style={{flex: 2}}
+          style={{ flex: 2 }}
           light
           disabled={this.state.loading}
           onPress={this.googleLogIn}
           type="google-plus-official"
         />
-        <View style={{flex: 1}} />
+        <View style={{ flex: 1 }} />
       </View>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  const { isLoggingIn } = state.session
-  return { isLoggingIn }
-}
+const mapStateToProps = state => {
+  const { isLoggingIn } = state.session;
+  return { isLoggingIn };
+};
 
 export default connect(mapStateToProps)(SignUp);

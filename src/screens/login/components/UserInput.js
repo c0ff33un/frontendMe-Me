@@ -29,16 +29,19 @@ class UserInput extends Component {
     email: "",
     pass: "",
     error: false,
+    firstError: false,
     loading: false
   };
 
   handleLogin = () => {
+    this.setState({ firstError: true })
     const { email, pass } = this.state
     this.props.dispatch(login(email, pass))
   }
 
   componentDidMount() {
-    this.setState({ email: "fake@email.com", pass: "password123" });    
+    this.setState({ email: "ialemusm@unal.edu.co", pass: "Ivan1234" });    
+
     // Font.loadAsync({
     //   'noto-sans': require('assets/fonts/NotoSans-Regular.ttf'),
     // });
@@ -46,7 +49,7 @@ class UserInput extends Component {
 
   render() {
 
-    if (this.props.loginError) {
+    if (this.props.loginError && this.state.firstError) {
       alert("Login error")
     }
 

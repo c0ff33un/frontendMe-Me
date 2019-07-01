@@ -1,5 +1,5 @@
 import React, { Fragment, Component } from "react";
-import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator, Dimensions } from "react-native";
+import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator, Dimensions, TouchableHighlight } from "react-native";
 import { connect } from "react-redux";
 import getEnvVars from 'me-me/environment'
 import {
@@ -60,10 +60,7 @@ class FeedScreen extends Component {
   handleRefresh = () => {
     const { dispatch, selectedFilter } = this.props
     dispatch(invalidateMemes(selectedFilter))
-    let i
-    for (i = 0; i < 5; ++i) {
-      dispatch(fetchMemes(selectedFilter, numColumns))
-    }
+    dispatch(fetchMemes(selectedFilter, numColumns))
   }
 
   handleLoadMore = () => {
@@ -88,10 +85,12 @@ class FeedScreen extends Component {
       return <View style={[styles.item, styles.itemInvisible]} />
     }
     return (
-      <Image 
-        style={styles.item}
-        source={{uri: item}}/
-      >
+      <TouchableHighlight style={{flex: 1}}onPress={(e)=>this.props.navigation.navigate('Post')}>
+        <Image 
+          style={styles.item}
+          source={{uri: item}}
+        />
+      </TouchableHighlight>
     );
   }
 
