@@ -220,9 +220,26 @@ class SettingsScreen extends Component {
             size={15}
             onPress={() => this.setModalVisible(false)}
           />
-
-          <PureChart data={sampleData} type="line" />
-          <PureChart data={sampleData2} type="pie" />
+          <View
+            style={{
+              flex: 10,
+              marginTop: 10,
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+            <PureChart
+              data={[
+                { x: "Comments", y: this.state.stats.comments },
+                { x: "Own Memes", y: this.state.stats.own_memes },
+                { x: "Own Posts", y: this.state.stats.own_posts },
+                { x: "Reactions", y: this.state.stats.reactions }
+              ]}
+              type="line"
+              showEvenNumberXaxisLabel={false}
+            />
+          </View>
+          {/* <PureChart data={sampleData2} type="pie" /> */}
         </Modal>
       </Fragment>
     );
