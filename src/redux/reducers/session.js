@@ -10,7 +10,8 @@ function session(
   state = {
     jwt: null,
     isLoggingIn: false,
-    needsValidation: false
+    needsValidation: false,
+    loginError: false
   }, 
   action
 ) {
@@ -26,7 +27,8 @@ function session(
         state,
         {jwt, isLoggingIn: false})
     case RECEIVE_JWT_ERROR: 
-      return { isLoggingIn: false }
+      const { message } = action.payload
+      return { isLoggingIn: false, loginError: true, message }
     case VALIDATE_EMAIL:
       return Object.assign({}, 
         state,

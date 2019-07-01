@@ -103,8 +103,8 @@ function receiveJWT(jwt) {
   return { type: RECEIVE_JWT, payload: { jwt } }
 }
 
-function receiveJWTError() {
-  return { type: RECEIVE_JWT_ERROR }
+function receiveJWTError(message) {
+  return { type: RECEIVE_JWT_ERROR, payload: {message} }
 }
 
 export function loginWithJWT(jwt){
@@ -135,12 +135,20 @@ export function login(email, password) {
       .then(response => {
         const { status } = response
         if(status == 401) {
-          dispatch(validateEmail())
+          return response.json()
         } else if (status == 201) {
           const jwt = response.headers.map.authorization
           dispatch(receiveJWT(jwt))
+        } else {
+          dispatch(receiveJWTError("monda"))
         }
         return response
+      })
+      .then(json => {
+        console.log("##################")
+        console.log(json)
+        dispatch(receiveJWTError("waat"))
+        return json
       })
       .catch(error => {
         console.log(error)

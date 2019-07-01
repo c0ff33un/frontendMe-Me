@@ -35,9 +35,6 @@ class UserInput extends Component {
   handleLogin = () => {
     const { email, pass } = this.state
     this.props.dispatch(login(email, pass))
-    if (!this.props.jwt) {
-      alert("Check your credentials")
-    }
   }
 
   componentDidMount() {
@@ -48,6 +45,11 @@ class UserInput extends Component {
   }
 
   render() {
+
+    if (this.props.loginError) {
+      alert("Login error")
+    }
+
     return (
       <View style={{ flex: 1, justifyContent: "center" }}>
         <Spinner
@@ -155,8 +157,8 @@ class UserInput extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { isLoggingIn, jwt } = state.session
-  return { isLoggingIn, jwt }
+  const { isLoggingIn, jwt, loginError } = state.session
+  return { isLoggingIn, jwt, loginError }
 }
 
 export default connect(mapStateToProps)(UserInput)
