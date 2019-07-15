@@ -73,6 +73,21 @@ export function memesByFilter(state = {}, action) {
   }
 }
 
+export function commentsById(state = {}, action) {
+    switch (action.type) {
+    case INVALIDATE_MEMES:
+    case RECEIVE_FILTERED_MEMES:
+    case INCREASE_MEMES_PAGE:
+    case REQUEST_MEMES:
+      const { id } = action.payload;
+      return Object.assign({}, state, {
+        [id]: memes_(state[filter], action)
+      });
+    default:
+      return state;
+  }
+}
+
 export function selectedFilter(state = "best", action) {
   switch (action.type) {
     case SET_MEME_FILTER:

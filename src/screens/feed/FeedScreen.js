@@ -65,7 +65,7 @@ class FeedScreen extends Component {
 
   handleLoadMore = () => {
     const { dispatch, selectedFilter } = this.props
-    dispatch(fetchMemes(selectedFilter, numColumns)) 
+    // dispatch(fetchMemes(selectedFilter, numColumns)) 
   }
 
   renderFooter = () => {
@@ -84,8 +84,10 @@ class FeedScreen extends Component {
     if (item.empty === true) {
       return <View style={[styles.item, styles.itemInvisible]} />
     }
+
+    console.log(item,index)
     return (
-      <TouchableHighlight style={{flex: 1}}onPress={(e)=>this.props.navigation.navigate('Post')}>
+      <TouchableHighlight style={{flex: 1}} onPress={() => this.props.navigation.navigate('Post',{uri:item, index, memes:this.props.memes, ids:this.props.allIds})}>
         <Image 
           style={styles.item}
           source={{uri: item}}
@@ -93,7 +95,6 @@ class FeedScreen extends Component {
       </TouchableHighlight>
     );
   }
-
 
   render() {
 
@@ -116,12 +117,12 @@ class FeedScreen extends Component {
           data={formatData(this.props.memes, numColumns)}
           numColumns={numColumns}
           renderItem={this.renderItem}
-          keyExtractor={(item,index) => index.toString()}
+          keyExtractor={(item,index) => index}
           ListFooterComponent={this.renderFooter}
           refreshing={this.props.isRefreshing}
           onRefresh={this.handleRefresh}
           onEndReached={this.handleLoadMore}
-          onEndTreshold={0}
+          onEndTreshold={0.5}
           extraData={this.props.isFetching}
         />
       </Fragment>
@@ -172,6 +173,7 @@ function mapStateToProps(state) {
     page,
     selectedFilter,
     memes,
+    allIds,
     isFetching,
     isRefreshing,
     lastUpdated  

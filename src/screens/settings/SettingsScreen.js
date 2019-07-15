@@ -33,7 +33,7 @@ class SettingsScreen extends Component {
     const { apiUrl } = getEnvVars;
     const url = apiUrl + "/user";
     const url2 = apiUrl + "/user/best_memes";
-    const url3 = apiUrl + "/user/stats/";
+    const url3 = apiUrl + "/user/stats.json";
     const jwt = this.props.jwt;
 
     const options = {
@@ -61,7 +61,7 @@ class SettingsScreen extends Component {
             this.setState({
               data: images,
               info: data[1],
-              stats: data[2]
+              stats: data[2].general_stats
             });
           })
           .catch(e => console.error(e));
@@ -71,7 +71,6 @@ class SettingsScreen extends Component {
 
   componentDidMount() {
     this.makeRemoteRequest();
-    // console.log(this.state.stats)
   }
 
   renderImage = image => {
@@ -134,8 +133,7 @@ class SettingsScreen extends Component {
           >
             <Image
               source={{
-                uri:
-                  "http://www.sclance.com/pngs/avatar-icon-png/avatar_icon_png_70850.png"
+                uri: this.state.info.img
               }}
               style={{
                 width: 90,
@@ -154,10 +152,10 @@ class SettingsScreen extends Component {
               paddingLeft: 3
             }}
           >
-            <Text> Comments: {this.state.stats.comments} </Text>
-            <Text> Own Memes: {this.state.stats.own_memes} </Text>
-            <Text> Own Posts: {this.state.stats.own_posts} </Text>
-            <Text> Reactions: {this.state.stats.reactions} </Text>
+            <Text> Comments: {this.state.stats.comments_count} </Text>
+            <Text> Own Memes: {this.state.stats.memes_count} </Text>
+            <Text> Own Posts: {this.state.stats.posts_count} </Text>
+            <Text> Reactions: {this.state.stats.reactions_count} </Text>
           </View>
           <View
             style={{
@@ -220,6 +218,19 @@ class SettingsScreen extends Component {
             size={15}
             onPress={() => this.setModalVisible(false)}
           />
+          {/* <Pdf
+            source={this.state.pdf}
+            onLoadComplete={(numberOfPages,filePath)=>{
+            console.log(`number of pages: ${numberOfPages}`);
+            }}
+            onPageChanged={(page,numberOfPages)=>{
+            console.log(`current page: ${page}`);
+            }}
+            onError={(error)=>{
+            console.log(error);
+            }}
+            style={styles.pdf}
+          /> */}
           <View
             style={{
               flex: 10,
@@ -230,16 +241,15 @@ class SettingsScreen extends Component {
           >
             <PureChart
               data={[
-                { x: "Comments", y: this.state.stats.comments },
-                { x: "Own Memes", y: this.state.stats.own_memes },
-                { x: "Own Posts", y: this.state.stats.own_posts },
-                { x: "Reactions", y: this.state.stats.reactions }
+                { x: "Comments", y: this.state.stats.comments_count },
+                { x: "Own Memes", y: this.state.stats.memes_count },
+                { x: "Own Posts", y: this.state.stats.posts_count },
+                { x: "Reactions", y: this.state.stats.reactions_count }
               ]}
               type="line"
               showEvenNumberXaxisLabel={false}
             />
           </View>
-          {/* <PureChart data={sampleData2} type="pie" /> */}
         </Modal>
       </Fragment>
     );

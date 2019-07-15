@@ -14,7 +14,8 @@ import {
   RECEIVE_JWT,
   VALIDATE_EMAIL,
   RECEIVE_JWT_ERROR,
-  LOGOUT
+  LOGOUT,
+  SET_POST_MEME,
 } from './actionTypes'
 import getEnvVars from 'me-me/environment'
 
@@ -74,6 +75,10 @@ function receiveComments(filter, json) {
   }
 }
 
+function setPostMeme(uri){
+  return {type: SET_POST_MEME, payload: {uri}}
+}
+
 export function fetchMemes(filter, size) {
   return (dispatch, getState) => {
     dispatch(requestMemes(filter))
@@ -98,8 +103,6 @@ export function fetchMemes(filter, size) {
       })
   }
 }
-
-export 
 
 function requestJWT() {
   return { type: REQUEST_JWT }
@@ -166,21 +169,53 @@ export function logout() {
   return { type: LOGOUT }
 }
 
-function fetchComments(id, page) {
-  return dispatch => {
+export function fetchComments(id) {
+  return (dispatch, getState) => {
     dispatch(requestComments(id))
-    const size = 8
+    const { page } = getState().commentsById[id]
     const { apiUrl } = getEnvVars
-    const url = `${apiUrl}/memes/${filter}?page=${page}&per_page=${size}`
-    // console.log(url)
+    const url = `${apiUrl}/memes/${id}/comments`
     return fetch(url)
       .then(response => response.json())
-      .then(json => dispatch(receiveComments(filter, json)))
+      .then(json => {
+        ids = json.map(meme => {return meme.id})
+        dispatch(increaseMemesPage(filter))
+        dispatch(receiveMemes(json))
+        dispatch(receiveFilteredMemes(filter, ids))
+        return json
+      })
       .catch(error => {
-        // console.log("fetchMemes error")
-        // console.log(error)
+        console.log("fetchMemes error")
+        console.log(error)
         dispatch(receiveMemesError())
         return error;
       })
   }
 }
+
+
+// export function selectPostMeme(uri) {
+//   return (dispatch, getState) => {
+//     dispatch(setPostMeme(uri))
+//     const { page } = getState().memesByFilter[filter]
+//     const { apiUrl } = getEnvVars
+//     const url = `${apiUrl}/memes/${filter}?page=${page}&per_page=${size}`
+//     dispatch(increaseMemesPage(filter))
+//     return fetch(url)
+//       .then(response => response.json())
+//       .then(json => {
+//         id = json.map(meme => {return meme.id})
+//         dispatch(increaseMemesPage(filter))
+//         dispatch(receiveMemes(json))
+//         dispatch(receiveFilteredMemes(filter, ids))
+//         dispatch(receivePostMeme(id))
+//         return json
+//       })
+//       .catch(error => {
+//         console.log("fetchMemes error")
+//         console.log(error)
+//         dispatch(receiveMemesError())
+//         return error;
+//       })
+//   }
+// }
