@@ -33,9 +33,9 @@ class PostScreen extends Component {
 
     //console.log(item,index)
     return (
-      <View>
-        <Text>{item.handle}</Text>
-        <Text>{item.comment}</Text>
+      <View style={{marginLeft: 8, marginRight: 8, marginBottom: 4, borderTopStartRadius: 10, borderTopEndRadius: 10, borderBottomEndRadius: 10, backgroundColor: "#ECF0F0"}}>
+        <Text style={{paddingLeft: 4}}>{item.handle}</Text>
+        <Text style={{fontSize: 20, paddingLeft: 8}}>{item.comment}</Text>
       </View>
     );
   }
@@ -126,7 +126,7 @@ class PostScreen extends Component {
 
         <View style={{flexDirection: "row"}}>
           <TextInput
-            mode="flat"
+            mode="outlined"
             placeholder="Hey! Put your comment here"
             style={styles.comment}
             value={this.state.comment}
@@ -146,14 +146,17 @@ class PostScreen extends Component {
           />
           <IconButton
             icon="send"
-            color={Colors.red500}
+            color="#F6BD60"
             size={30}
             onPress = {this.uploadComment}
+            style = {{
+                      paddingTop: 27}}
           />
         </View>
         <FlatList
           data={[{handle: "ialemusm", comment: "Hola"}, {handle: "ialemusm", comment: "Buenas"}]}
           renderItem={this.renderItem}
+          keyExtractor={(item, index) => index.toString()}
           onEndTreshold={0}
           initialNumToRender={18}
         />
