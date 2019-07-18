@@ -28,11 +28,46 @@ class PostScreen extends Component {
       img:null,
       reactions:{},
       avatar:null,
+      comment: ""
     };
   }
 
   uploadComment = () => {
     
+    
+    // const allIds = this.props.navigation.getParam('ids');
+    
+    // const {apiUrl} =  getEnvVars
+    // const url = `${apiUrl}memes/${allIds[this.state.index]}/comments`
+
+    // console.log(url)
+
+    // const options = {   
+    //   method: 'POST',
+    //   headers: {
+    //     'Authorization': this.props.jwt,
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     comment:{
+    //       body: this.state.comment
+    //     }
+    //   })
+    // }
+
+    // fetch(url, options)
+    //     .then(res => {
+    //       console.log('Sucess');
+    //       return res.json();
+    //     })
+    //     .then(res => {
+    //       console.log(res)
+    //       return res
+    //     })
+    //     .catch(error => {
+    //       console.log(error);
+    //       return error;
+    //     })
   }
   
   componentWillMount = () =>{
@@ -148,7 +183,7 @@ class PostScreen extends Component {
             icon="send"
             color={Colors.red500}
             size={30}
-            onPress={() => console.log('Pressed')}
+            onPress={this.uploadComment}
           />
         </View>
       </Fragment>
