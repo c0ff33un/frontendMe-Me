@@ -5,12 +5,11 @@
     "privacy": "public",
     "sdkVersion": "33.0.0",
     "platforms": [
-      "ios",
       "android"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo/logo_black.png",
     "splash": {
       "image": "./assets/logo/logo_black.png",
       "resizeMode": "contain",
@@ -21,9 +20,10 @@
     },
     "assetBundlePatterns": [
       "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
+      ],
+    "android": {
+      "package": "com.c0ff33.meme",
+      "googleServicesFile": "./google-services.json"
     }
   }
 }

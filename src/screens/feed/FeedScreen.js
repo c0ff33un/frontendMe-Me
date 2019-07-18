@@ -83,17 +83,28 @@ class FeedScreen extends Component {
     if (item.empty === true) {
       return <View style={[styles.item, styles.itemInvisible]} />
     }
-
-    console.log(item,index)
     return (
-      <TouchableHighlight style={{flex: 1}} onPress={() => this.props.navigation.navigate('Post',{uri:item, index, memes:this.props.memes, ids:this.props.allIds})}>
+      <TouchableHighlight style={{flex: 1}}onPress={(e)=>this.props.navigation.navigate('Post')}>
         <Image 
           style={styles.item}
           source={{uri: item}}
         />
       </TouchableHighlight>
     );
+  }*/
+
+  renderItem = ({item, index}) => {
+    if (item.empty === true) {
+      return <View style={[styles.item, styles.itemInvisible]} />
+    }
+    return (
+      <Image 
+        style={styles.item}
+        source={{uri: item}}
+      />
+    );
   }
+
 
   render() {
 
