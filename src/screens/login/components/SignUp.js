@@ -8,17 +8,17 @@ import * as Facebook from 'expo-facebook';
 import { connect } from "react-redux";
 import { loginWithJWT } from '@redux/actions';
 
+import * as GoogleSignIn from 'expo-google-sign-in';
+
 class SignUp extends Component {
   state = {
     loading: false
   };
 
   facebookLogIn = async () => {
-    // e.preventDefault()
+    const { apiUrl } = getEnvVars
 
-    const {apiUrl} = getEnvVars
     this.setState({ loading: true });
-    // Linking.openURL(facebookURL)
 
     try {
       const {
@@ -76,7 +76,6 @@ class SignUp extends Component {
         androidClientId,
         // behavior: 'system',
         scope: ['profile', 'email', 'plus_me']
-
       }
 
       // console.log(webClientId)
@@ -90,7 +89,11 @@ class SignUp extends Component {
       //     `&access_type=offline` +
       //     `&scope=${encodeURIComponent('email profile')}`,
       // })
-      const result = await Google.logInAsync(config);
+
+      await GoogleSignIn.initAsync(config)
+      await GoogleSignIn.askForPlayServicesAsync();
+
+      const result = await GoogleSignIn.signInAsync();
       // console.log(result)
       const { type, accessToken, user } = result;
       if(type === 'success') {
@@ -104,8 +107,7 @@ class SignUp extends Component {
         }
 
         // console.log('options:', options)
-        fetch(apiUrl + '/auth/google',
-        options)
+        fetch('https://meemperrapi.herokuapp.com/auth/google', options)
         .then(response => {
           response.json()
           
@@ -126,7 +128,7 @@ class SignUp extends Component {
         this.setState({ loading: false })
       }
     } catch ({ message }) {
-      alert(`login: ${message}`);
+      alert(`login: ${message}\n\n${result}`);
       this.setState({ loading: false });
     }
   };

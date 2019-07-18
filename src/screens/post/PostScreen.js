@@ -48,7 +48,12 @@ class PostScreen extends Component {
       .then(response => response.json())
       .then(json=>{
         console.log(json.id, json.creator.handle, json.img, json.reaction_counts )
-        const meme_id = json.id, handle = json.creator.handle, img = json.img, reactions = json.reaction_counts, avatar = json.creator.avatar
+        const meme_id = json.id, 
+        handle = json.creator.handle, 
+        img = json.img, 
+        reactions = json.reaction_counts, 
+        avatar = json.creator.avatar
+        
         this.setState({
           meme_id,
           handle,

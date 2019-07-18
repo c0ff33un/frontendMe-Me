@@ -240,10 +240,11 @@ class SettingsScreen extends Component {
               width={Dimensions.get('window').width} // from react-native
               height={220}
               chartConfig={{
-                backgroundGradientFrom: '#F6BD60',
-                backgroundGradientTo: '#FDFFFC',
+                backgroundColor: '#F6BD60',
+                backgroundGradientFrom: '#272727',
+                backgroundGradientTo: '#616161',
                 decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(39, 39, 39, ${opacity})`
+                color: (opacity = 1) => `rgba(246, 189, 96, ${opacity})`
               }}
               style={{
                 marginVertical: 8,
@@ -260,10 +261,10 @@ class SettingsScreen extends Component {
             <PieChart
               data={
                 [
-                  { name: 'Up', population: this.state.reactions.swipe_up > 0 ? this.state.reactions.swipe_up : 0, color: 'rgba(131, 167, 234, 1)', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-                  { name: 'Down', population: this.state.reactions.swipe_down > 0 ? this.state.reactions.swipe_down : 0, color: '#F00', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-                  { name: 'Left', population: this.state.reactions.swipe_left > 0 ? this.state.reactions.swipe_left : 0, color: 'red', legendFontColor: '#7F7F7F', legendFontSize: 15 },
-                  { name: 'Right', population: this.state.reactions.swipe_right > 0 ? this.state.reactions.swipe_right : 1, color: '#ffffff', legendFontColor: '#7F7F7F', legendFontSize: 15 },
+                  { name: 'Up', population: this.state.reactions.swipe_up > 0 ? this.state.reactions.swipe_up : 0, color: '#A4036F', legendFontColor: '#A4036F', legendFontSize: 15 },
+                  { name: 'Down', population: this.state.reactions.swipe_down > 0 ? this.state.reactions.swipe_down : 0, color: '#048BA8', legendFontColor: '#048BA8', legendFontSize: 15 },
+                  { name: 'Left', population: this.state.reactions.swipe_left > 0 ? this.state.reactions.swipe_left : 0, color: '#16DB93', legendFontColor: '#16DB93', legendFontSize: 15 },
+                  { name: 'Right', population: this.state.reactions.swipe_right > 0 ? this.state.reactions.swipe_right : 1, color: '#F6BD60', legendFontColor: '#F6BD60', legendFontSize: 15 },
                 ]
               }
               width={Dimensions.get('window').width}
