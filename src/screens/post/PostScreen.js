@@ -1,30 +1,32 @@
 import React, { Fragment, Component } from "react";
 import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator, Dimensions } from "react-native";
-import { connect } from "react-redux";
+import { batch, connect } from "react-redux";
+import {Button} from 'react-native-paper';
+
+import { fetchMeme } from '@redux/actions'
+import { getMemeById } from '@redux/selectors'
+import { Avatar, DefaultTheme } from "react-native-paper";
 import getEnvVars from 'me-me/environment'
-import {
-  selectedFilter,
-  fetchMemesIfNeeded,
-  invalidateMemes,
-  setMemeFilter,
-  increaseMemesPageIfNeeded
-} from '@redux/actions'
-import { getMemesByFilter } from '@redux/selectors'
-import { MEME_FILTERS } from '@redux/actionTypes'
-import PropTypes from 'prop-types'
-import { TouchableHighlight } from "react-native-gesture-handler";
-import { IconButton, Colors, TextInput, Avatar, DefaultTheme } from "react-native-paper";
 
 class PostScreen extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      item: null,
+      index: -1,
+      meme_id:null,
+      handle:null,
+      img:null,
+      reactions:{},
+      avatar:null,
+      loading:false,
+    };
+  }
 
   state = {
     comment: ""
   };
-
-  constructor(props) {
-    super(props);
-
-  }
 
   renderItem = ({item, index}) => {
     if (item.empty === true) {
@@ -78,51 +80,112 @@ class PostScreen extends Component {
 
      this.setState({ comment: "" })
   }
+  
+  reactMeme = (type) => {
+    const {apiUrl} =  getEnvVars
+    const url = `${apiUrl}/memes/${this.props.memePostId}`
+    let reaction_type = null;
 
-  // componentWillMount = () => {
-  //   const meme_id = 1
-  //   const comment_page = 1
+    switch(type){
+      case "up":
+        reaction_type = 0
+        break;
+      case "down":
+        reaction_type = 1
+        break;
+      case "left":
+        reaction_type = 2
+        break;
+      case "right":
+        reaction_type = 3
+        break;
+    }
 
-  //   const {apiUrl} = getEnvVars
-  //   const options = {
-  //     method: 'GET',
-  //     url: `${apiUrl}/memes/1/comments?page=1`
-  //   }
+    const options = {
+      method: 'POST',
+      headers: {
+        "Authorization": `${this.props.jwt}`,
+        "Content-Type" : "application/json"
+      },
+      body: JSON.stringify({
+            "reaction": {
+                "reaction_type": reaction_type
+            }
+        })
+    }
 
-  // //   fetch(apiUrl,options)
-  // //     .then(response => response.json())
-  // //     .then(data => console.log(data))
-  // //     .catch(e => console.error(e))
-  // }
+    fetch(url,options)
+      .then(response => response.json())
+      .then(json=>{
+        return json
+      })
+      .catch(error => {
+        console.log(error)
+        return error
+      })
+  }
+
+  componentDidMount = () =>{
+    const { dispatch } = this.props
+    dispatch(fetchMeme());
+  }
 
   render() {
 
     return(
-      <Fragment>
+      <Fragment style={{flex: 1}}>
         <View style={styles.userInfo}>
-          <View style={{flex:1}}>
-            <Avatar.Text theme={{
-              ...DefaultTheme,
-              roundness: 2,
-              colors: {
-                ...DefaultTheme.colors,
-                primary: 'white',
-                accent: 'black',
-                background : 'black'
-              }
-            }
-          } label="U" color={"transparent"} size={30}/>
-            <Text style={styles.headerText}>
-              Usuario
+          <View style={styles.header}>
+            <Avatar.Image 
+              source={{uri:this.props.meme.avatar}}
+              theme={{
+                ...DefaultTheme,
+                roundness: 2,
+                colors: {
+                  ...DefaultTheme.colors,
+                  primary: 'white',
+                  accent: 'black',
+                  background : 'black'
+                  }
+                }
+              } 
+              size={30}/>
+          </View>
+          <View>
+            <Text style={styles.handleText}>
+              {this.props.meme.handle}
             </Text>
           </View>
-
         </View>
+
         <Image 
-            style={styles.image}
-            source={require("assets/img/elon.jpg")}
-            resizeMode="contain"
+          style={styles.image}
+          source={{uri: this.props.meme.img}}
+          resizeMode="contain"
         />
+
+        <View style={styles.reactions}>
+          <View style={styles.reaction}>
+            <Button  mode="outlined" style={styles.react_button} icon="favorite" theme={react_button_theme} onPress={()=>console.log("up")} >
+              {this.props.meme.reactions ? this.props.meme.reactions.up : ""}
+            </Button>
+          </View>
+          <View style={styles.reaction}>
+            <Button   mode="outlined" style={styles.react_button} icon="mood-bad" theme={react_button_theme} onPress={()=>console.log("down")}>
+              {this.props.meme.reactions ? this.props.meme.reactions.down : ""}
+            </Button>
+          </View>
+          <View  style={styles.reaction} >
+            <Button  mode="outlined"style={styles.react_button} icon="check-circle" theme={react_button_theme} onPress={()=>console.log("left")}>
+              {this.props.meme.reactions ? this.props.meme.reactions.left : ""}
+            </Button>
+          </View>
+          <View  style={styles.reaction} >
+            <Button  mode="outlined"style={styles.react_button} icon="thumbs-up-down" theme={react_button_theme} onPress={()=>console.log("right")}>
+              {this.props.meme.reactions ? this.props.meme.reactions.right : ""}
+            </Button>
+          </View>
+        </View>
 
         <View style={{flexDirection: "row"}}>
           <TextInput
@@ -160,23 +223,57 @@ class PostScreen extends Component {
           onEndTreshold={0}
           initialNumToRender={18}
         />
-
       </Fragment>
     );
   }
 }
 
+function mapStateToProps(state) {
+  // 👌
+  const { session, memePostId } = state
+
+  const meme = getMemeById(state, memePostId) 
+  const jwt = session.jwt;
+
+  console.log('meme', meme)
+  return {
+    meme,
+    memePostId,
+    jwt
+  }
+}
+
+const react_button_theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#F6BD60",
+    accent: "#F6BD60",
+    background: "#000"
+  }
+}
+
 const styles = StyleSheet.create({
+  header:{
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  handleText:{
+    fontSize: 40,
+  },
   image:{
     marginTop:10,
     width: Dimensions.get('window').width, 
     height: Dimensions.get('window').height*0.4, 
-    // flex: 1, 
+    flex: 4, 
+    backgroundColor: 'white',
     borderWidth: 0, 
     borderColor: 'white', 
     alignSelf: 'stretch'
   },
   userInfo:{
+    flex: 1,
     marginBottom:10,
     alignSelf:'center',
     alignContent: 'center',
@@ -185,10 +282,41 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end'
   },
-  headerText:{
+  react_button:{
     fontWeight: 'bold',
     fontSize: 10,
   },
+  reactions:{
+    flex:1,
+    marginTop: 20,
+    // alignContent: 'center',
+    justifyContent: 'space-around',
+    flexDirection: "row",
+  },
+  reaction: {
+    flex:1,
+    marginTop: 20,
+    // alignContent: 'center',
+    justifyContent: 'space-around',
+    flexDirection: "row",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#F5FCFF"
+  },
+  card: {
+    flex: 1,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: "#E8E8E8",
+    justifyContent: "center",
+    backgroundColor: "white"
+  },
+  text: {
+    textAlign: "center",
+    fontSize: 50,
+    backgroundColor: "transparent"
+  }, 
   comment: {
     margin: 8,
     borderColor: "gray",
@@ -196,10 +324,4 @@ const styles = StyleSheet.create({
   }
 })
 
-function mapStateToProps(state) {
-  return {
-    jwt: state.session.jwt
-  };
-}
-
-export default connect(mapStateToProps)(PostScreen)
+export default  connect(mapStateToProps)(PostScreen);
