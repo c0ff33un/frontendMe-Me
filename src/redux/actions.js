@@ -1,4 +1,5 @@
 import {  
+  SET_MEME,
   SET_MEMES,
   SET_UPLOAD_MEME,
   UPLOADING_MEME,
@@ -14,9 +15,12 @@ import {
   RECEIVE_JWT,
   VALIDATE_EMAIL,
   RECEIVE_JWT_ERROR,
-  LOGOUT
+  LOGOUT,
+  SET_FINISHED,
+  RECEIVE_MEME
 } from './actionTypes'
 import getEnvVars from 'me-me/environment'
+import { batch } from 'react-redux'
 
 /*
  * action creators
@@ -42,15 +46,23 @@ export function requestMemes(filter) {
   return { type: REQUEST_MEMES, payload: {filter} }
 }
 
+export function requestMeme(id){
+  return { type: REQUEST_MEME, paylod: { id }}
+}
+
 function receiveMemesError() {
   return { type: RECEIVE_MEMES_ERROR }
 }
 
-function receiveMemes(json) {
-  return { type: RECEIVE_MEMES, payload: {json} }
+export function receiveMemes(json) {
+  return { type: RECEIVE_MEMES, payload: { json } }
 }
 
-function receiveFilteredMemes(filter, ids) {
+export function receiveMeme(json){
+  return {type: RECEIVE_MEME, payload: { json }}
+}
+
+export function receiveFilteredMemes(filter, ids) {
   return { type: RECEIVE_FILTERED_MEMES, 
     payload: {
       filter,
@@ -60,7 +72,7 @@ function receiveFilteredMemes(filter, ids) {
   }
 }
 
-function increaseMemesPage(filter) {
+export function increaseMemesPage(filter) {
   return {type: INCREASE_MEMES_PAGE, payload: {filter} }
 }
 
@@ -74,32 +86,89 @@ function receiveComments(filter, json) {
   }
 }
 
-export function fetchMemes(filter, size) {
+export function setFinished(filter) {
+  return { type: SET_FINISHED, payload: { filter }}
+}
+
+export function fetchMemes(filter) {
   return (dispatch, getState) => {
-    dispatch(requestMemes(filter))
-    const { page } = getState().memesByFilter[filter]
+    
+    batch(() => {
+      dispatch(requestMemes(filter))
+      dispatch(increaseMemesPage(filter))
+    }) 
+
+    const { page, allIds } = getState().memesByFilter[filter]
     const { apiUrl } = getEnvVars
-    const url = `${apiUrl}/memes/${filter}?page=${page}&per_page=${size}`
-    dispatch(increaseMemesPage(filter))
+    console.log('fetchMemesPage:' + page)
+    console.log('total by now' + allIds.length)
+    const size = 18
+    const url = `${apiUrl}/memes/${filter}?page=${page-1}&per_page=${size}`
+
+
+    
     return fetch(url)
-      .then(response => response.json())
-      .then(json => {
-        ids = json.map(meme => {return meme.id})
-        dispatch(increaseMemesPage(filter))
+    .then(response => response.json())
+    .then(json => {
+      ids = json.map(meme =>  meme.id)
+      finished = ids.length === 0
+
+      batch(() => {
         dispatch(receiveMemes(json))
         dispatch(receiveFilteredMemes(filter, ids))
-        return json
-      })
-      .catch(error => {
-        console.log("fetchMemes error")
-        console.log(error)
-        dispatch(receiveMemesError())
-        return error;
-      })
+
+        if (finished)
+          dispatch(setFinished(filter))
+
+      }) 
+      
+      console.log('results')
+      const { page, allIds } = getState().memesByFilter[filter]
+      const { apiUrl } = getEnvVars
+      console.log('fetchMemesPage:' + page)
+      console.log('total by now' + allIds.length)
+      console.log('Finished loading images')
+      return json
+    })
+    .catch( error => {
+      console.log('Infinite Scroll error', error)
+      dispatch(receiveMemesError(filter))
+      return error;
+    });
   }
 }
 
-export 
+export function setMeme(id){
+  return { type: SET_MEME, payload: { id } }
+}
+
+export function fetchMeme() {
+  return (dispatch, getState) => {
+    const { apiUrl } = getEnvVars
+
+    const url = `${apiUrl}/memes/${getState().memePostId}`
+    const options = {
+      method: "GET",
+      headers: {
+        "Authorization": `${getState().jwt}`,
+        "Accept": "application/json"
+      },
+    }
+
+    return fetch(url, options)
+    .then(response => response.json())
+    .then(json => {
+      console.log('fetchMeme' + json )
+      dispatch(receiveMeme(json))
+      console.log('Finished fetching meme')
+      return json
+    })
+    .catch( error => {
+      console.log('Problem fetching meme', error)
+      return error;
+    });
+  }
+}
 
 function requestJWT() {
   return { type: REQUEST_JWT }
@@ -166,21 +235,53 @@ export function logout() {
   return { type: LOGOUT }
 }
 
-function fetchComments(id, page) {
-  return dispatch => {
+export function fetchComments(id) {
+  return (dispatch, getState) => {
     dispatch(requestComments(id))
-    const size = 8
+    const { page } = getState().commentsById[id]
     const { apiUrl } = getEnvVars
-    const url = `${apiUrl}/memes/${filter}?page=${page}&per_page=${size}`
-    // console.log(url)
+    const url = `${apiUrl}/memes/${id}/comments`
     return fetch(url)
       .then(response => response.json())
-      .then(json => dispatch(receiveComments(filter, json)))
+      .then(json => {
+        ids = json.map(meme => {return meme.id})
+        dispatch(increaseMemesPage(filter))
+        dispatch(receiveMemes(json))
+        dispatch(receiveFilteredMemes(filter, ids))
+        return json
+      })
       .catch(error => {
-        // console.log("fetchMemes error")
-        // console.log(error)
+        console.log("fetchMemes error")
+        console.log(error)
         dispatch(receiveMemesError())
         return error;
       })
   }
 }
+
+
+// export function selectPostMeme(uri) {
+//   return (dispatch, getState) => {
+//     dispatch(setPostMeme(uri))
+//     const { page } = getState().memesByFilter[filter]
+//     const { apiUrl } = getEnvVars
+//     const url = `${apiUrl}/memes/${filter}?page=${page}&per_page=${size}`
+//     dispatch(increaseMemesPage(filter))
+//     return fetch(url)
+//       .then(response => response.json())
+//       .then(json => {
+//         id = json.map(meme => {return meme.id})
+//         dispatch(increaseMemesPage(filter))
+//         dispatch(receiveMemes(json))
+//         dispatch(receiveFilteredMemes(filter, ids))
+//         dispatch(receivePostMeme(id))
+//         return json
+//       })
+//       .catch(error => {
+//         console.log("fetchMemes error")
+//         console.log(error)
+//         dispatch(receiveMemesError())
+//         return error;
+//       })
+//   }
+// }

@@ -7,3 +7,4 @@ npm-debug.*
 *.mobileprovision
 environment.js
 credentials.json
+google-services.json

@@ -60,7 +60,8 @@ export default class UserInput extends Component {
     errorEmail: false,
     errorPass: false,
     errorRePass: false,
-    loading: false
+    loading: false,
+    uri:"https://i.imgur.com/9HflgDv.jpg",
   };
 
   signUp = () => {
@@ -69,37 +70,41 @@ export default class UserInput extends Component {
 
     if (this.validateAll()) {
       const { apiUrl } = getEnvVars
-      console.log(apiUrl)
-      var ans = fetch(apiUrl + '/signup', {
+      const url = `${apiUrl}/signup`;
+
+      let formdata = new FormData();
+
+      formdata.append("user[email]", this.state.email)
+      formdata.append("user[handle]", this.state.user)
+      formdata.append("user[password]", this.state.pass)
+      formdata.append("user[birthday]", this.state.birthday)
+      formdata.append("user[avatar]", {uri: this.state.uri, name: 'elon.jpg', type: 'image/jpeg'})
+
+      const options = {   
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
-        body: JSON.stringify({
-          user:{
-            handle: this.state.user,
-            email: this.state.email,
-            birthday: this.state.birthday,
-            password: this.state.pass
+        body: formdata
+      }
+
+      fetch(url,options)
+        .then(response => {
+          if(response.ok){
+            console.log('Success', response);
+            this.setState({ loading: false });
+            this.props.navigation.navigate('ValidateEmail');
+          } else {
+            console.log('Error:', response)
+            this.setState({ loading: false });
+
           }
         })
-      })
-      .then(response => {
-        if(response.ok){
-          console.log('Success', response);
+        .catch( error => {
+          console.log(error)
           this.setState({ loading: false });
-          this.props.navigation.navigate('ValidateEmail');
-        } else {
-          console.log('Error:', response)
-          this.setState({ loading: false });
-
-        }
-      })
-      .catch( error => {
-        console.log(error)
-        this.setState({ loading: false });
-        return error;
-      })
+          return error;
+        })
     } else {
       this.setState({ loading: false })
     }
@@ -333,62 +338,40 @@ export default class UserInput extends Component {
         </View>
         <View style={styles.imagesContainer}>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black" onPress={()=>this.setState({uri:'https://i.imgur.com/9HflgDv.jpg'})}>
               <Image
                 style={styles.image}
                 source={require("assets/img/elon.jpg")}
               />
             </TouchableHighlight>
-            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-              <Image
-                style={styles.image}
-                source={require("assets/img/ugandanknuck.jpg")}
-              />
-            </TouchableHighlight>
-            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-              <Image
-                style={styles.image}
-                source={require("assets/img/harambe.jpg")}
-              />
-            </TouchableHighlight>
-            <TouchableHighlight
-              activeOpacity={0.5}
-              underlayColor="black"
-              onPress={() => console.log(this)}
-            >
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black" onPress={()=>this.setState({uri:'https://i.imgur.com/9HflgDv.jpg'})}>
               <Image
                 style={styles.image}
                 source={require("assets/img/elon.jpg")}
               />
             </TouchableHighlight>
-            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-              <Image
-                style={styles.image}
-                source={require("assets/img/harambe.jpg")}
-              />
-            </TouchableHighlight>
-            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-              <Image
-                style={styles.image}
-                source={require("assets/img/ugandanknuck.jpg")}
-              />
-            </TouchableHighlight>
-            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
-              <Image
-                style={styles.image}
-                source={require("assets/img/harambe.jpg")}
-              />
-            </TouchableHighlight>
-            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black" onPress={()=>this.setState({uri:'https://i.imgur.com/9HflgDv.jpg'})}>
               <Image
                 style={styles.image}
                 source={require("assets/img/elon.jpg")}
               />
             </TouchableHighlight>
-            <TouchableHighlight activeOpacity={0.5} underlayColor="black">
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black" onPress={()=>this.setState({uri:'https://i.imgur.com/9HflgDv.jpg'})}>
               <Image
                 style={styles.image}
-                source={require("assets/img/ugandanknuck.jpg")}
+                source={require("assets/img/elon.jpg")}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black" onPress={()=>this.setState({uri:'https://i.imgur.com/9HflgDv.jpg'})}>
+              <Image
+                style={styles.image}
+                source={require("assets/img/elon.jpg")}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight activeOpacity={0.5} underlayColor="black" onPress={()=>this.setState({uri:'https://i.imgur.com/9HflgDv.jpg'})}>
+              <Image
+                style={styles.image}
+                source={require("assets/img/elon.jpg")}
               />
             </TouchableHighlight>
           </ScrollView>
