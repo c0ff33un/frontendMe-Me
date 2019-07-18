@@ -5,7 +5,7 @@ import {Button} from 'react-native-paper';
 
 import { fetchMeme } from '@redux/actions'
 import { getMemeById } from '@redux/selectors'
-import { Avatar, DefaultTheme } from "react-native-paper";
+import { IconButton, TextInput, Avatar, DefaultTheme } from "react-native-paper";
 import getEnvVars from 'me-me/environment'
 
 class PostScreen extends Component {
@@ -22,6 +22,63 @@ class PostScreen extends Component {
       avatar:null,
       loading:false,
     };
+  }
+
+  state = {
+    comment: ""
+  };
+
+  renderItem = ({item, index}) => {
+    if (item.empty === true) {
+      return <View style={[styles.item, styles.itemInvisible]} />
+    }
+
+    //console.log(item,index)
+    return (
+      <View style={{marginLeft: 8, marginRight: 8, marginBottom: 4, borderTopStartRadius: 10, borderTopEndRadius: 10, borderBottomEndRadius: 10, backgroundColor: "#ECF0F0"}}>
+        <Text style={{paddingLeft: 4}}>{item.handle}</Text>
+        <Text style={{fontSize: 20, paddingLeft: 8}}>{item.comment}</Text>
+      </View>
+    );
+  }
+
+  uploadComment = () => {
+
+    const {apiUrl} =  getEnvVars
+    const url = `${apiUrl}memes/${this.props.memePostId}/comments`
+
+    console.log(url)
+
+    const options = {   
+      method: 'POST',
+      headers: {
+        'Authorization': this.props.jwt,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        comment:{
+          body: this.state.comment 
+        } 
+      }),
+    }
+
+    console.log(options)
+    fetch(url, options)
+        .then(res => {
+          console.log('Sucess');
+          //console.log(res);
+          return res.json();
+        })
+        .then(res => {
+          console.log(res)
+          return res
+        })
+        .catch(error => {
+          console.log(error);
+          return error;
+        })
+
+     this.setState({ comment: "" })
   }
   
   reactMeme = (type) => {
@@ -76,7 +133,7 @@ class PostScreen extends Component {
   render() {
 
     return(
-      <Fragment style={{flex: 1}}>
+      <Fragment>
         <View style={styles.userInfo}>
           <View style={styles.header}>
             <Avatar.Image 
@@ -103,7 +160,9 @@ class PostScreen extends Component {
 
         <Image 
           style={styles.image}
-          source={{uri: this.props.meme.img}}/>
+          source={{uri: this.props.meme.img}}
+          resizeMode="contain"
+        />
 
         <View style={styles.reactions}>
           <View style={styles.reaction}>
@@ -127,6 +186,43 @@ class PostScreen extends Component {
             </Button>
           </View>
         </View>
+
+        <View style={{flexDirection: "row"}}>
+          <TextInput
+            mode="outlined"
+            placeholder="Hey! Put your comment here"
+            style={styles.comment}
+            value={this.state.comment}
+            onChangeText={comment => this.setState({ comment })}
+            theme={{
+              ...DefaultTheme,
+              colors: {
+                ...DefaultTheme.colors,
+                primary: '#6290C3',
+                accent: '#272727',
+                background: '#FDFFFC',
+                text: '#272727',
+                disabled: '#FDFFFC',
+                placeholder: '#272727',
+              }
+            }}
+          />
+          <IconButton
+            icon="send"
+            color="#F6BD60"
+            size={30}
+            onPress = {this.uploadComment}
+            style = {{
+                      paddingTop: 27}}
+          />
+        </View>
+        <FlatList
+          data={[{handle: "ialemusm", comment: "Hola"}, {handle: "ialemusm", comment: "Buenas"}]}
+          renderItem={this.renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          onEndTreshold={0}
+          initialNumToRender={18}
+        />
       </Fragment>
     );
   }
@@ -168,8 +264,8 @@ const styles = StyleSheet.create({
   },
   image:{
     marginTop:10,
-    // width: Dimensions.get('window').width, 
-    // height: Dimensions.get('window').height*0.6, 
+    width: Dimensions.get('window').width, 
+    height: Dimensions.get('window').height*0.4, 
     flex: 4, 
     backgroundColor: 'white',
     borderWidth: 0, 
@@ -220,6 +316,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 50,
     backgroundColor: "transparent"
+  }, 
+  comment: {
+    margin: 8,
+    borderColor: "gray",
+    width: Dimensions.get('window').width*5/6
   }
 })
 
