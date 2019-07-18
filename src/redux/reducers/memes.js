@@ -7,7 +7,8 @@ import {
   RECEIVE_MEMES,
   RECEIVE_FILTERED_MEMES,
   RECEIVE_MEMES_ERROR,
-  INCREASE_MEMES_PAGE
+  INCREASE_MEMES_PAGE,
+  SET_FINISHED
 } from "../actionTypes";
 
 const initialState = { memeFilter: "best" };
@@ -17,6 +18,7 @@ function memes_(
     isFetching: false,
     isRefreshing: false,
     didInvalidate: false,
+    finished: false,
     page: 1,
     allIds: []
   },
@@ -27,6 +29,7 @@ function memes_(
       return Object.assign({}, state, {
         didInvalidate: true,
         isRefreshing: true,
+        finished: false,
         page: 1,
         allIds: []
       });
@@ -47,11 +50,16 @@ function memes_(
     case RECEIVE_MEMES_ERROR:
       return Object.assign({}, state, {
         isFetching: false,
-        isRefreshing: false
+        isRefreshing: false,
+        finished: true
       });
     case INCREASE_MEMES_PAGE:
       return Object.assign({}, state, {
         page: state.page + 1
+      });
+    case SET_FINISHED:
+      return Object.assign({}, state, {
+        finished: true
       });
     default:
       return state;
@@ -63,6 +71,7 @@ export function memesByFilter(state = {}, action) {
     case INVALIDATE_MEMES:
     case RECEIVE_FILTERED_MEMES:
     case INCREASE_MEMES_PAGE:
+    case SET_FINISHED:
     case REQUEST_MEMES:
       const { filter } = action.payload;
       return Object.assign({}, state, {
@@ -90,12 +99,8 @@ export function memes(state = {
     case RECEIVE_MEMES:
       const { json } = action.payload
       let { allIds, byIds } = state
-      console.log('##################')
-      console.log(json)
       for (key in Object.keys(json)) {
         meme = json[key]
-        console.log('@@@@@@@@')
-        console.log(Object.keys(meme))
         if ( state.byIds[meme] ) {
           byIds[meme.id] = meme.thumbnail
         } else {
