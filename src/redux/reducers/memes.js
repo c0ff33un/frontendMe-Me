@@ -162,10 +162,10 @@ export function memes(state = {
         handle: json.creator.handle,
         avatar: json.creator.avatar,
         reactions: json.reaction_counts,
-        reacted: json.reaction_signed_user
+        reacted: json.reaction_signed_user,
       }
 
-      byIds[json.id] = meme_stuff;
+      byIds[json.id] = Object.assign({}, byIds[json.id], meme_stuff);
 
       return Object.assign({}, state, {
         byIds

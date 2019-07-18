@@ -83,7 +83,7 @@ class PostScreen extends Component {
   
   reactMeme = (type) => {
     const {apiUrl} =  getEnvVars
-    const url = `${apiUrl}/memes/${this.props.memePostId}`
+    const url = `${apiUrl}/memes/${this.props.memePostId}/reactions`
     let reaction_type = null;
 
     switch(type){
@@ -116,8 +116,10 @@ class PostScreen extends Component {
 
     fetch(url,options)
       .then(response => response.json())
-      .then(json=>{
-        return json
+      .then(res=>{
+        const { dispatch } = this.props
+        dispatch(fetchMeme());
+        console.log(res);
       })
       .catch(error => {
         console.log(error)
@@ -137,6 +139,7 @@ class PostScreen extends Component {
         <View style={styles.userInfo}>
           <View style={styles.header}>
             <Avatar.Image 
+              style={styles.avatar}
               source={{uri:this.props.meme.avatar}}
               theme={{
                 ...DefaultTheme,
@@ -159,6 +162,7 @@ class PostScreen extends Component {
         </View>
 
         <Image 
+          resizeMode="contain"
           style={styles.image}
           source={{uri: this.props.meme.img}}
           resizeMode="contain"
@@ -166,22 +170,22 @@ class PostScreen extends Component {
 
         <View style={styles.reactions}>
           <View style={styles.reaction}>
-            <Button  mode="outlined" style={styles.react_button} icon="favorite" theme={react_button_theme} onPress={()=>console.log("up")} >
+            <Button  mode="outlined" style={styles.react_button} icon="favorite" theme={react_button_theme} onPress={()=>this.reactMeme("up")} >
               {this.props.meme.reactions ? this.props.meme.reactions.up : ""}
             </Button>
           </View>
           <View style={styles.reaction}>
-            <Button   mode="outlined" style={styles.react_button} icon="mood-bad" theme={react_button_theme} onPress={()=>console.log("down")}>
+            <Button   mode="outlined" style={styles.react_button} icon="mood-bad" theme={react_button_theme} onPress={()=>this.reactMeme("down")}>
               {this.props.meme.reactions ? this.props.meme.reactions.down : ""}
             </Button>
           </View>
           <View  style={styles.reaction} >
-            <Button  mode="outlined"style={styles.react_button} icon="check-circle" theme={react_button_theme} onPress={()=>console.log("left")}>
+            <Button  mode="outlined"style={styles.react_button} icon="check-circle" theme={react_button_theme} onPress={()=>this.reactMeme("left")}>
               {this.props.meme.reactions ? this.props.meme.reactions.left : ""}
             </Button>
           </View>
           <View  style={styles.reaction} >
-            <Button  mode="outlined"style={styles.react_button} icon="thumbs-up-down" theme={react_button_theme} onPress={()=>console.log("right")}>
+            <Button  mode="outlined"style={styles.react_button} icon="thumbs-up-down" theme={react_button_theme} onPress={()=>this.reactMeme("right")}>
               {this.props.meme.reactions ? this.props.meme.reactions.right : ""}
             </Button>
           </View>
@@ -285,17 +289,17 @@ const styles = StyleSheet.create({
   react_button:{
     fontWeight: 'bold',
     fontSize: 10,
+    height: 40,
   },
   reactions:{
     flex:1,
-    marginTop: 20,
+    marginTop: 10,
     // alignContent: 'center',
     justifyContent: 'space-around',
     flexDirection: "row",
   },
   reaction: {
     flex:1,
-    marginTop: 20,
     // alignContent: 'center',
     justifyContent: 'space-around',
     flexDirection: "row",
@@ -316,11 +320,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 50,
     backgroundColor: "transparent"
-  }, 
-  comment: {
-    margin: 8,
-    borderColor: "gray",
-    width: Dimensions.get('window').width*5/6
+  },
+  avatar:{
+    flex: 1,
+    heigth: 50,
   }
 })
 

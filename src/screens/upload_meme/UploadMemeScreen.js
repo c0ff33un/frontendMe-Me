@@ -4,9 +4,7 @@ import { Button } from 'react-native-paper'
 import * as ImagePicker from 'expo-image-picker';
 import { connect } from "react-redux";
 import getEnvVars from 'me-me/environment'
-// const vision = require('@google-cloud/vision');
-// Creates a client
-// const client = new vision.ImageAnnotatorClient();
+import {  DefaultTheme } from "react-native-paper";
 
 
 class UploadMemeScreen extends Component {
@@ -96,6 +94,8 @@ class UploadMemeScreen extends Component {
                 {!image && 
                   <Button 
                     title="Choose photo"
+                    theme={react_button_theme}
+                    mode="contained"
                     onPress={this.handleChoosePhoto}
                   >
                     Choose photo
@@ -111,16 +111,21 @@ class UploadMemeScreen extends Component {
                 {image && 
                   <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                     <Button
+                      mode="text"
                       title="Cambiar Me-Me"
                       onPress={this.handleChoosePhoto}
+                      theme={react_button_theme}
                     >
                       Change meme
                     </Button>
                     <Button
                       title="Subir Me-Me"
+                      mode="contained"
+                      dark={true}
                       onPress={this.uploadMeme}
                       disabled={this.state.loading}
                       loading={this.state.loading}
+                      theme={react_button_theme}
                     >
                       Upload meme
                     </Button>   
@@ -130,6 +135,19 @@ class UploadMemeScreen extends Component {
             </View>
       );
     }
+}
+
+const react_button_theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#F6BD60",
+    accent: "#F6BD60",
+    background: "#F6BD60",
+    surface: "#F6BD60",
+    text: "#F6BD60",
+    placeholder: "#F6BD60"
+  }
 }
 
 function mapStateToProps(state) {
