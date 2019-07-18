@@ -91,7 +91,7 @@ class FeedScreen extends Component {
         />
       </TouchableHighlight>
     );
-  }*/
+  }
 
   renderItem = ({item, index}) => {
     if (item.empty === true) {
