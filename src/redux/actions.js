@@ -147,8 +147,15 @@ export function fetchMeme() {
     const { apiUrl } = getEnvVars
 
     const url = `${apiUrl}/memes/${getState().memePostId}`
-    
-    return fetch(url)
+    const options = {
+      method: "GET",
+      headers: {
+        "Authorization": `${getState().jwt}`,
+        "Accept": "application/json"
+      },
+    }
+
+    return fetch(url, options)
     .then(response => response.json())
     .then(json => {
       console.log('fetchMeme' + json )

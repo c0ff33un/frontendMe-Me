@@ -127,7 +127,10 @@ export function memePostId(state = null, action) {
 
 export function memes(state = {
   allIds: [],
-  byIds: {}
+  byIds: {},
+  reactions: {},
+  avatar: null,
+  handle: "",
 }, action) {
   switch (action.type) {
     
@@ -153,7 +156,16 @@ export function memes(state = {
     case RECEIVE_MEME: {
       const { json } = action.payload
       let { byIds } = state
-      byIds[json.id].img = json.img;
+      
+      let meme_stuff = {
+        img: json.img,
+        handle: json.creator.handle,
+        avatar: json.creator.avatar,
+        reactions: json.reaction_counts,
+        reacted: json.reaction_signed_user
+      }
+
+      byIds[json.id] = meme_stuff;
 
       return Object.assign({}, state, {
         byIds
