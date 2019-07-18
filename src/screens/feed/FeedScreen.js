@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from "react";
 import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator, Dimensions, TouchableHighlight } from "react-native";
 import { batch, connect } from "react-redux";
+import { Button, DefaultTheme } from "react-native-paper";
 import getEnvVars from 'me-me/environment'
 import {
   invalidateMemes,
@@ -99,16 +100,26 @@ class FeedScreen extends Component {
 
     return(
       <Fragment>
-        <Picker
-          selectedValue={selectedFilter}
-          style={{height: 50, width: 100}}
-          mode='dropdown'
-          onValueChange={this.handleChangeFilter}
-        >
-          <Picker.Item label="best" value={MEME_FILTERS.BEST} />
-          <Picker.Item label="hot" value={MEME_FILTERS.HOT} />
-          <Picker.Item label="new" value={MEME_FILTERS.NEW} />
-        </Picker>
+        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+          <Button
+            onPress={() => this.handleChangeFilter(MEME_FILTERS.HOT)}
+            theme={(selectedFilter ==  MEME_FILTERS.HOT)?(selectedFilterTheme):(unselectedFilterTheme)}
+          >
+            HOT
+          </Button>
+          <Button
+            onPress={() => this.handleChangeFilter(MEME_FILTERS.BEST)}
+            theme={(selectedFilter ==  MEME_FILTERS.BEST)?(selectedFilterTheme):(unselectedFilterTheme)}
+          >
+            BEST
+          </Button>
+          <Button
+            onPress={() => this.handleChangeFilter(MEME_FILTERS.NEW)}
+            theme={(selectedFilter ==  MEME_FILTERS.NEW)?(selectedFilterTheme):(unselectedFilterTheme)}
+          >
+            NEW
+          </Button>
+        </View>
         <FlatList
           style={styles.container}
           data={this.props.memes}
@@ -159,10 +170,30 @@ function mapStateToProps(state) {
   }
 }
 
+const selectedFilterTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#F6BD60",
+    accent: "#F6BD60",
+    background: "#000"
+  }
+}
+
+const unselectedFilterTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#272727",
+    accent: "#F6BD60",
+    background: "#B7B7B7"
+  }
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical: 20,
+    marginTop: 20,
   },  
   item: {
     backgroundColor: '#4D243D',
@@ -175,6 +206,7 @@ const styles = StyleSheet.create({
   itemInvisible: {
     backgroundColor: 'transparent',
   }
+
 })
 
 export default connect(mapStateToProps)(FeedScreen)
