@@ -5,7 +5,7 @@ import {Button} from 'react-native-paper';
 
 import { fetchMeme } from '@redux/actions'
 import { getMemeById } from '@redux/selectors'
-import { Avatar, DefaultTheme } from "react-native-paper";
+import { IconButton, TextInput, Avatar, DefaultTheme } from "react-native-paper";
 import getEnvVars from 'me-me/environment'
 
 class PostScreen extends Component {
@@ -45,7 +45,7 @@ class PostScreen extends Component {
   uploadComment = () => {
 
     const {apiUrl} =  getEnvVars
-    const url = `${apiUrl}memes/74/comments`
+    const url = `${apiUrl}memes/${this.props.memePostId}/comments`
 
     console.log(url)
 
@@ -133,7 +133,7 @@ class PostScreen extends Component {
   render() {
 
     return(
-      <Fragment style={{flex: 1}}>
+      <Fragment>
         <View style={styles.userInfo}>
           <View style={styles.header}>
             <Avatar.Image 
