@@ -1,5 +1,5 @@
-import React, { Fragment, Component } from "react";
-import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator, Dimensions } from "react-native";
+import React, { Component } from "react";
+import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator, Dimensions, ScrollView} from "react-native";
 import { batch, connect } from "react-redux";
 import {Button} from 'react-native-paper';
 
@@ -135,7 +135,7 @@ class PostScreen extends Component {
   render() {
 
     return(
-      <Fragment>
+      <ScrollView>
         <View style={styles.userInfo}>
           <View style={styles.header}>
             <Avatar.Image 
@@ -160,6 +160,7 @@ class PostScreen extends Component {
             </Text>
           </View>
         </View>
+
 
         <Image 
           resizeMode="contain"
@@ -227,7 +228,7 @@ class PostScreen extends Component {
           onEndTreshold={0}
           initialNumToRender={18}
         />
-      </Fragment>
+      </ScrollView>
     );
   }
 }
@@ -269,7 +270,7 @@ const styles = StyleSheet.create({
   image:{
     marginTop:10,
     width: Dimensions.get('window').width, 
-    height: Dimensions.get('window').height*0.4, 
+    height: Dimensions.get('window').height*0.8, 
     flex: 4, 
     backgroundColor: 'white',
     borderWidth: 0, 
@@ -320,10 +321,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 50,
     backgroundColor: "transparent"
-  },
-  avatar:{
-    flex: 1,
-    heigth: 50,
   }
 })
 
