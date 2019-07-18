@@ -1,163 +1,128 @@
 import React, { Fragment, Component } from "react";
-import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator, Dimensions, Button } from "react-native";
-// import { connect } from "react-redux";
+import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator, Dimensions } from "react-native";
+import { connect } from "react-redux";
 import getEnvVars from 'me-me/environment'
-// import {
-//   selectedFilter,
-//   fetchMemesIfNeeded,
-//   invalidateMemes,
-//   setMemeFilter,
-//   increaseMemesPageIfNeeded
-// } from '@redux/actions'
-// import { getMemesByFilter } from '@redux/selectors'
-// import { MEME_FILTERS } from '@redux/actionTypes'
-// import PropTypes from 'prop-types'
-// import { TouchableHighlight } from "react-native-gesture-handler";
-
+import {
+  selectedFilter,
+  fetchMemesIfNeeded,
+  invalidateMemes,
+  setMemeFilter,
+  increaseMemesPageIfNeeded
+} from '@redux/actions'
+import { getMemesByFilter } from '@redux/selectors'
+import { MEME_FILTERS } from '@redux/actionTypes'
+import PropTypes from 'prop-types'
+import { TouchableHighlight } from "react-native-gesture-handler";
 import { IconButton, Colors, TextInput, Avatar, DefaultTheme } from "react-native-paper";
 
 class PostScreen extends Component {
 
+  state = {
+    comment: ""
+  };
+
   constructor(props) {
     super(props);
-    this.state = {
-      item: null,
-      index: -1,
-      meme_id:null,
-      handle:null,
-      img:null,
-      reactions:{},
-      avatar:null,
-      comment: ""
-    };
+
+  }
+
+  renderItem = ({item, index}) => {
+    if (item.empty === true) {
+      return <View style={[styles.item, styles.itemInvisible]} />
+    }
+
+    //console.log(item,index)
+    return (
+      <View>
+        <Text>{item.handle}</Text>
+        <Text>{item.comment}</Text>
+      </View>
+    );
   }
 
   uploadComment = () => {
-    
-    
-    // const allIds = this.props.navigation.getParam('ids');
-    
-    // const {apiUrl} =  getEnvVars
-    // const url = `${apiUrl}memes/${allIds[this.state.index]}/comments`
 
-    // console.log(url)
-
-    // const options = {   
-    //   method: 'POST',
-    //   headers: {
-    //     'Authorization': this.props.jwt,
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     comment:{
-    //       body: this.state.comment
-    //     }
-    //   })
-    // }
-
-    // fetch(url, options)
-    //     .then(res => {
-    //       console.log('Sucess');
-    //       return res.json();
-    //     })
-    //     .then(res => {
-    //       console.log(res)
-    //       return res
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //       return error;
-    //     })
-  }
-  
-  componentWillMount = () =>{
-    const u = this.props.navigation.getParam('uri')
-    const i = this.props.navigation.getParam('index')
-    // console.log(u,i)
-    this.setState({index:i,uri:u})
-  }
-
-  componentDidMount = () =>{
-    const allIds = this.props.navigation.getParam('ids');
-    
     const {apiUrl} =  getEnvVars
-    const url = `${apiUrl}/memes/${allIds[this.state.index]}`
+    const url = `${apiUrl}memes/74/comments`
 
-    fetch(url)
-      .then(response => response.json())
-      .then(json=>{
-        console.log(json.id, json.creator.handle, json.img, json.reaction_counts )
-        const meme_id = json.id, handle = json.creator.handle, img = json.img, reactions = json.reaction_counts, avatar = json.creator.avatar
-        this.setState({
-          meme_id,
-          handle,
-          img,
-          reactions,
-          avatar
+    console.log(url)
+
+    const options = {   
+      method: 'POST',
+      headers: {
+        'Authorization': this.props.jwt,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        comment:{
+          body: this.state.comment 
+        } 
+      }),
+    }
+
+    console.log(options)
+    fetch(url, options)
+        .then(res => {
+          console.log('Sucess');
+          //console.log(res);
+          return res.json();
         })
-        return json
-      })
-      .catch(error => {
-        console.log(error)
-        return error
-      })
+        .then(res => {
+          console.log(res)
+          return res
+        })
+        .catch(error => {
+          console.log(error);
+          return error;
+        })
+
+     this.setState({ comment: "" })
   }
+
+  // componentWillMount = () => {
+  //   const meme_id = 1
+  //   const comment_page = 1
+
+  //   const {apiUrl} = getEnvVars
+  //   const options = {
+  //     method: 'GET',
+  //     url: `${apiUrl}/memes/1/comments?page=1`
+  //   }
+
+  // //   fetch(apiUrl,options)
+  // //     .then(response => response.json())
+  // //     .then(data => console.log(data))
+  // //     .catch(e => console.error(e))
+  // }
 
   render() {
 
     return(
       <Fragment>
         <View style={styles.userInfo}>
-          <View style={styles.header}>
-            <Avatar.Image 
-              source={{uri:this.state.avatar}}
-              theme={{
-                ...DefaultTheme,
-                roundness: 2,
-                colors: {
-                  ...DefaultTheme.colors,
-                  primary: 'white',
-                  accent: 'black',
-                  background : 'black'
-                  }
-                }
-              } 
-              size={30}/>
-          </View>
-          <View>
-            <Text style={styles.handleText}>
-              {this.state.handle}
+          <View style={{flex:1}}>
+            <Avatar.Text theme={{
+              ...DefaultTheme,
+              roundness: 2,
+              colors: {
+                ...DefaultTheme.colors,
+                primary: 'white',
+                accent: 'black',
+                background : 'black'
+              }
+            }
+          } label="U" color={"transparent"} size={30}/>
+            <Text style={styles.headerText}>
+              Usuario
             </Text>
           </View>
+
         </View>
         <Image 
-          style={styles.image}
-          source={{uri: this.state.img}}
-          resizeMode="contain"
+            style={styles.image}
+            source={require("assets/img/elon.jpg")}
+            resizeMode="contain"
         />
-
-        <View style={styles.reactions}>
-          <View style={styles.reaction}>
-            <Text style={styles.headerText}>
-              {this.state.reactions.up}
-            </Text>
-          </View>
-          <View style={styles.reaction}>
-            <Text style={styles.headerText}>
-              {this.state.reactions.down}
-            </Text>
-          </View>
-          <View style={styles.reaction}>
-            <Text style={styles.headerText}>
-              {this.state.reactions.left}
-            </Text>
-          </View>
-          <View style={styles.reaction}>
-            <Text style={styles.headerText}>
-              {this.state.reactions.right}
-            </Text>
-          </View>
-        </View>
 
         <View style={{flexDirection: "row"}}>
           <TextInput
@@ -183,29 +148,27 @@ class PostScreen extends Component {
             icon="send"
             color={Colors.red500}
             size={30}
-            onPress={this.uploadComment}
+            onPress = {this.uploadComment}
           />
         </View>
+        <FlatList
+          data={[{handle: "ialemusm", comment: "Hola"}, {handle: "ialemusm", comment: "Buenas"}]}
+          renderItem={this.renderItem}
+          onEndTreshold={0}
+          initialNumToRender={18}
+        />
+
       </Fragment>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  header:{
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-  },
-  handleText:{
-    fontSize: 40,
-  },
   image:{
     marginTop:10,
     width: Dimensions.get('window').width, 
     height: Dimensions.get('window').height*0.4, 
     // flex: 1, 
-    backgroundColor: 'white',
     borderWidth: 0, 
     borderColor: 'white', 
     alignSelf: 'stretch'
@@ -223,32 +186,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 10,
   },
-  reactions:{
-    flex:1,
-    alignContent: 'center',
-    justifyContent: 'center',
-    flexDirection: "row",
-  },
-  reaction: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "#F5FCFF"
-  },
-  card: {
-    flex: 1,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: "#E8E8E8",
-    justifyContent: "center",
-    backgroundColor: "white"
-  },
-  text: {
-    textAlign: "center",
-    fontSize: 50,
-    backgroundColor: "transparent"
-  },
   comment: {
     margin: 8,
     borderColor: "gray",
@@ -256,4 +193,10 @@ const styles = StyleSheet.create({
   }
 })
 
-export default PostScreen;
+function mapStateToProps(state) {
+  return {
+    jwt: state.session.jwt
+  };
+}
+
+export default connect(mapStateToProps)(PostScreen)
