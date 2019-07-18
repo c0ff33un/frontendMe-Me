@@ -73,7 +73,7 @@ class SignUp extends Component {
       this.setState({ loading: true });
       // let redirectUrl = AuthSession.getRedirectUrl()
       const config = {
-        androidClientId,
+        // androidClientId,
         // behavior: 'system',
         scope: ['profile', 'email', 'plus_me']
       }
