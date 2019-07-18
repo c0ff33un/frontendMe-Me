@@ -105,12 +105,12 @@ export function memes(state = {
     case RECEIVE_MEMES:
       const { json } = action.payload
       let { allIds, byIds } = state
-      console.log('##################')
-      console.log(json)
+      //console.log('##################')
+      //console.log(json)
       for (key in Object.keys(json)) {
         meme = json[key]
-        console.log('@@@@@@@@')
-        console.log(Object.keys(meme))
+        //console.log('@@@@@@@@')
+        //console.log(Object.keys(meme))
         if ( state.byIds[meme] ) {
           byIds[meme.id] = meme.thumbnail
         } else {

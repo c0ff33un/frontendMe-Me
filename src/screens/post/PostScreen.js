@@ -14,7 +14,7 @@ import getEnvVars from 'me-me/environment'
 // import PropTypes from 'prop-types'
 // import { TouchableHighlight } from "react-native-gesture-handler";
 
-import { Avatar, DefaultTheme } from "react-native-paper";
+import { IconButton, Colors, TextInput, Avatar, DefaultTheme } from "react-native-paper";
 
 class PostScreen extends Component {
 
@@ -29,6 +29,10 @@ class PostScreen extends Component {
       reactions:{},
       avatar:null,
     };
+  }
+
+  uploadComment = () => {
+    
   }
   
   componentWillMount = () =>{
@@ -93,7 +97,9 @@ class PostScreen extends Component {
         </View>
         <Image 
           style={styles.image}
-          source={{uri: this.state.img}}/>
+          source={{uri: this.state.img}}
+          resizeMode="contain"
+        />
 
         <View style={styles.reactions}>
           <View style={styles.reaction}>
@@ -117,6 +123,34 @@ class PostScreen extends Component {
             </Text>
           </View>
         </View>
+
+        <View style={{flexDirection: "row"}}>
+          <TextInput
+            mode="flat"
+            placeholder="Hey! Put your comment here"
+            style={styles.comment}
+            value={this.state.comment}
+            onChangeText={comment => this.setState({ comment })}
+            theme={{
+              ...DefaultTheme,
+              colors: {
+                ...DefaultTheme.colors,
+                primary: '#6290C3',
+                accent: '#272727',
+                background: '#FDFFFC',
+                text: '#272727',
+                disabled: '#FDFFFC',
+                placeholder: '#272727',
+              }
+            }}
+          />
+          <IconButton
+            icon="send"
+            color={Colors.red500}
+            size={30}
+            onPress={() => console.log('Pressed')}
+          />
+        </View>
       </Fragment>
     );
   }
@@ -134,7 +168,7 @@ const styles = StyleSheet.create({
   image:{
     marginTop:10,
     width: Dimensions.get('window').width, 
-    height: Dimensions.get('window').height*0.6, 
+    height: Dimensions.get('window').height*0.4, 
     // flex: 1, 
     backgroundColor: 'white',
     borderWidth: 0, 
@@ -179,6 +213,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 50,
     backgroundColor: "transparent"
+  },
+  comment: {
+    margin: 8,
+    borderColor: "gray",
+    width: Dimensions.get('window').width*5/6
   }
 })
 

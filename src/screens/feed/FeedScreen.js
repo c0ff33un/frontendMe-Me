@@ -17,13 +17,13 @@ const numColumns = 3;
 
 const formatData = (data, numColumns) => {
   let numberOfElementsLastRow = data.length % numColumns;
-  console.log('numberOfELementsLastRow'+numberOfElementsLastRow);
+  //console.log('numberOfELementsLastRow'+numberOfElementsLastRow);
   while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
     console.log('here')
     data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true});
     numberOfElementsRow = numberOfElementsLastRow + 1;
   }
-  console.log('formatDataEnd')
+  //console.log('formatDataEnd')
   return data;
 }
 
@@ -85,7 +85,7 @@ class FeedScreen extends Component {
       return <View style={[styles.item, styles.itemInvisible]} />
     }
 
-    console.log(item,index)
+    //console.log(item,index)
     return (
       <TouchableHighlight style={{flex: 1}} onPress={() => this.props.navigation.navigate('Post',{uri:item, index, memes:this.props.memes, ids:this.props.allIds})}>
         <Image 
