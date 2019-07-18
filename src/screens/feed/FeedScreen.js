@@ -18,11 +18,11 @@ const numColumns = 3;
 const formatData = (data, numColumns) => {
   let numberOfElementsLastRow = data.length % numColumns;
   console.log('numberOfELementsLastRow'+numberOfElementsLastRow);
-  /*while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
+  while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
     console.log('here')
     data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true});
     numberOfElementsRow = numberOfElementsLastRow + 1;
-  }*/
+  }
   console.log('formatDataEnd')
   return data;
 }
@@ -65,7 +65,7 @@ class FeedScreen extends Component {
 
   handleLoadMore = () => {
     const { dispatch, selectedFilter } = this.props
-    // dispatch(fetchMemes(selectedFilter, numColumns)) 
+    dispatch(fetchMemes(selectedFilter, numColumns)) 
   }
 
   renderFooter = () => {
