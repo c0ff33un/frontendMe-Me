@@ -13,6 +13,18 @@ import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
 import { logout } from "@redux/actions";
 import PureChart from "react-native-pure-chart";
+import * as FileSystem from 'expo-file-system';
+import { Linking } from 'react-native';
+import * as IntentLauncher from 'expo-intent-launcher';
+
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from 'react-native-chart-kit'
 
 import getEnvVars from "me-me/environment";
 
@@ -22,11 +34,37 @@ class SettingsScreen extends Component {
     stats: {},
     info: {},
     data: [],
-    modalVisible: false
+    modalVisible: false,
+    reactions: {}
   };
 
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
+  }
+
+  downloadStats(){
+    const {apiUrl} = getEnvVars
+    const jwt = this.props.jwt;
+    const options = {
+      headers: {
+        Authorization: jwt,
+        Accept: "*/*",
+      }
+    }
+
+    FileSystem.downloadAsync(
+      `${apiUrl}/user/certificate`,
+      `${FileSystem.documentDirectory}certificate.pdf`,
+      options
+    )
+      .then((result) => {
+        console.log(result)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+      
   }
 
   makeRemoteRequest = () => {
@@ -61,7 +99,8 @@ class SettingsScreen extends Component {
             this.setState({
               data: images,
               info: data[1],
-              stats: data[2].general_stats
+              stats: data[2].general_stats,
+              reactions: data[2].reactions_stats
             });
           })
           .catch(e => console.error(e));
@@ -95,31 +134,6 @@ class SettingsScreen extends Component {
   };
 
   render() {
-    let sampleData = [
-      { x: "2018-01-01", y: 30 },
-      { x: "2018-01-02", y: 200 },
-      { x: "2018-01-03", y: 170 },
-      { x: "2018-01-04", y: 250 },
-      { x: "2018-01-05", y: 10 }
-    ];
-
-    let sampleData2 = [
-      {
-        value: 50,
-        label: "Marketing",
-        color: "red"
-      },
-      {
-        value: 40,
-        label: "Sales",
-        color: "blue"
-      },
-      {
-        value: 25,
-        label: "Support",
-        color: "green"
-      }
-    ];
     return (
       <Fragment>
         <View style={{ flex: 2, flexDirection: "row" }}>
@@ -171,6 +185,14 @@ class SettingsScreen extends Component {
               color="#F6BD60"
               size={20}
               onPress={() => this.setModalVisible(true)}
+            />
+            <Icon
+              reverse
+              name="md-document"
+              type="ionicon"
+              color="#F6BD60"
+              size={20}
+              onPress={() => {this.downloadStats()}}
             />
           </View>
         </View>
@@ -239,16 +261,59 @@ class SettingsScreen extends Component {
               alignItems: "center"
             }}
           >
-            <PureChart
-              data={[
-                { x: "Comments", y: this.state.stats.comments_count },
-                { x: "Own Memes", y: this.state.stats.memes_count },
-                { x: "Own Posts", y: this.state.stats.posts_count },
-                { x: "Reactions", y: this.state.stats.reactions_count }
-              ]}
-              type="line"
-              showEvenNumberXaxisLabel={false}
+            <BarChart
+              data={{
+                labels: ['Comments', 'Own Memes', 'Own Posts', 'Reactions'],
+                datasets: [{
+                  data: [
+                    this.state.stats.comments_count,
+                    this.state.stats.memes_count,
+                    this.state.stats.posts_count,
+                    this.state.stats.reactions_count,
+                  ]
+                }]
+              }}
+              width={Dimensions.get('window').width} // from react-native
+              height={220}
+              chartConfig={{
+                backgroundColor: '#F6BD60',
+                backgroundGradientFrom: '#272727',
+                backgroundGradientTo: '#616161',
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(246, 189, 96, ${opacity})`
+              }}
+              style={{
+                marginVertical: 8,
+                borderRadius: 16
+              }}
             />
+            { this.state.stats.reactions_count == 0?
+            <View>
+              <Text>
+                You haven't reacted yet. Is everything ok?
+              </Text>
+            </View>
+            :
+            <PieChart
+              data={
+                [
+                  { name: 'Up', population: this.state.reactions.swipe_up > 0 ? this.state.reactions.swipe_up : 0, color: '#A4036F', legendFontColor: '#A4036F', legendFontSize: 15 },
+                  { name: 'Down', population: this.state.reactions.swipe_down > 0 ? this.state.reactions.swipe_down : 0, color: '#048BA8', legendFontColor: '#048BA8', legendFontSize: 15 },
+                  { name: 'Left', population: this.state.reactions.swipe_left > 0 ? this.state.reactions.swipe_left : 0, color: '#16DB93', legendFontColor: '#16DB93', legendFontSize: 15 },
+                  { name: 'Right', population: this.state.reactions.swipe_right > 0 ? this.state.reactions.swipe_right : 1, color: '#F6BD60', legendFontColor: '#F6BD60', legendFontSize: 15 },
+                ]
+              }
+              width={Dimensions.get('window').width}
+              height={220}
+              chartConfig={{
+                backgroundGradientFrom: '#F6BD60',
+                backgroundGradientTo: '#FDFFFC',
+                color: (opacity = 1) => `rgba(39, 39, 39, ${opacity})`
+              }}
+              accessor="population"
+              paddingLeft="15"
+              absolute
+            />}
           </View>
         </Modal>
       </Fragment>

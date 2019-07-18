@@ -6,7 +6,9 @@ import getEnvVars from 'me-me/environment'
 import {
   invalidateMemes,
   setMemeFilter,
-  fetchMemes
+  fetchMemes,
+  setMeme,
+  fetchMeme
 } from '@redux/actions'
 import { getMemesByIds } from '@redux/selectors'
 import { MEME_FILTERS } from '@redux/actionTypes'
@@ -83,10 +85,16 @@ class FeedScreen extends Component {
     if (item.empty === true) {
       return <View style={[styles.item, styles.itemInvisible]} />
     }
-
-    //console.log(item,index)
     return (
-      <TouchableHighlight style={{flex: 1}} onPress={() => this.props.navigation.navigate('Post',{uri:item, index, memes:this.props.memes, ids:this.props.allIds})}>
+      <TouchableHighlight 
+        style={{flex: 1}} 
+        onPress={ () => {
+          const { dispatch } = this.props
+          
+          dispatch(setMeme(this.props.allIds[index]));
+          this.props.navigation.navigate('Post'); 
+        }
+      }>
         <Image 
           style={styles.item}
           source={{uri: item}}
@@ -94,6 +102,7 @@ class FeedScreen extends Component {
       </TouchableHighlight>
     );
   }
+
 
   render() {
 
@@ -167,7 +176,8 @@ function mapStateToProps(state) {
     selectedFilter,
     memes,
     finished,
-    isFetching
+    isFetching,
+    allIds
   }
 }
 
