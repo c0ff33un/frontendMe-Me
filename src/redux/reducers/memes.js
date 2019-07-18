@@ -1,6 +1,7 @@
 import {
   SET_MEME_FILTER,
   SET_MEMES,
+  SET_MEME,
   MEME_FILTERS,
   INVALIDATE_MEMES,
   REQUEST_MEMES,
@@ -114,16 +115,25 @@ export function selectedFilter(state = "best", action) {
   }
 }
 
+
+export function memePostId(state = null, action) {
+  switch (action.type) {
+    case SET_MEME:
+      return action.payload.id
+    default:
+      return state
+  }
+}
+
 export function memes(state = {
   allIds: [],
   byIds: {}
 }, action) {
-  if(typeof(action) !== "undefined"){
-    const { json } = action.payload
-    let { allIds, byIds } = state
-  }
   switch (action.type) {
-    case RECEIVE_MEMES:
+    
+    case RECEIVE_MEMES: {
+      const { json } = action.payload
+      let { byIds, allIds } = state
       for (key in Object.keys(json)) {
         meme = json[key]
         byIds[meme.id] = {}
@@ -135,21 +145,22 @@ export function memes(state = {
           byIds[meme.id].thumbnail = meme.thumbnail
         }
       }
+
       return Object.assign({}, state, {
         allIds, byIds
       })
-      break;
-    case RECEIVE_MEME:
-      // const { json } = action.payload
-      // let { byIds } = state
-      byIds[action.payload.id].img = action.payload.img;
-      let cur_id = json.id;
+    }
+    case RECEIVE_MEME: {
+      const { json } = action.payload
+      let { byIds } = state
+      byIds[json.id].img = json.img;
 
       return Object.assign({}, state, {
-        byIds,cur_id
+        byIds
       })
-      break;
-    default:
+    }
+    default: {
       return state;
+    }
   }
 }

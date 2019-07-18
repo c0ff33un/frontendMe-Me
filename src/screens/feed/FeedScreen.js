@@ -89,12 +89,10 @@ class FeedScreen extends Component {
       <TouchableHighlight 
         style={{flex: 1}} 
         onPress={ () => {
-          this.props.navigation.navigate('Post'); 
+          const { dispatch } = this.props
           
-          batch(() =>{
-            dispatch(setMeme(this.props.allIds[index]));
-            dispatch(fetchMeme());
-          })
+          dispatch(setMeme(this.props.allIds[index]));
+          this.props.navigation.navigate('Post'); 
         }
       }>
         <Image 

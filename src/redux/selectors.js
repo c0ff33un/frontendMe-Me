@@ -25,4 +25,4 @@ export const getMemesByIds = (store, ids) => {
 }
 
 export const getMemeById = (store, id) => 
-  getMemesState(store) ? { ...getMemesState(store).byIds[id].img } : {}
+  getMemesState(store).byIds[id] ? getMemesState(store).byIds[id].img : null 

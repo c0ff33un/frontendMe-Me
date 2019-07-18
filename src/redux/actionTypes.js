@@ -6,6 +6,7 @@ export const SET_UPLOAD_MEME = 'SET_UPLOAD_MEME'
 export const TOGGLE_UPLOADING_MEME = 'UPLOADING_MEME'
 export const SET_MEMES = 'SET_MEMES'
 
+export const SET_MEME = 'SET_MEME'
 export const RECEIVE_MEMES = 'RECEIVE_MEMES'
 export const RECEIVE_MEME = 'RECEIVE_MEME'
 export const SET_MEME_FILTER = 'SET_MEME_FILTER'

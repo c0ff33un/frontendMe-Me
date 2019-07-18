@@ -2,17 +2,12 @@ import React, { Fragment, Component } from "react";
 import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator, Dimensions, Button } from "react-native";
 import { batch, connect } from "react-redux";
 import getEnvVars from 'me-me/environment'
-// import {
-//   invalidateMemes,
-//   setMemeFilter,
-//   fetchMeme
-//   setMeme
-// } from '@redux/actions'
-// import { getMemesByFilter } from '@redux/selectors'
+
 // import { MEME_FILTERS } from '@redux/actionTypes'
 // import PropTypes from 'prop-types'
 // import { TouchableHighlight } from "react-native-gesture-handler";
-
+import { fetchMeme } from '@redux/actions'
+import { getMemeById } from '@redux/selectors'
 import { Avatar, DefaultTheme } from "react-native-paper";
 
 class PostScreen extends Component {
@@ -38,11 +33,8 @@ class PostScreen extends Component {
   }
 
   componentDidMount = () =>{
-    // if(!meme)
-    //   dispatch(fetchMeme(this.props.cur_id))
-
-    // const allIds = this.props.navigation.getParam('ids');
-    
+    const { dispatch } = this.props
+    dispatch(fetchMeme());/*
     const {apiUrl} =  getEnvVars
     const url = `${apiUrl}/memes/${this.props.cur_id}`
 
@@ -68,7 +60,7 @@ class PostScreen extends Component {
       .catch(error => {
         console.log(error)
         return error
-      })
+      })*/
   }
 
   render() {
@@ -131,24 +123,13 @@ class PostScreen extends Component {
 
 function mapStateToProps(state) {
   // 👌
-  const { selectedFilter, memesByFilter, session, cur_id } = state
-  const { allIds, isFetching, page, finished } = memesByFilter[
-    selectedFilter
-  ] || {
-    allIds: [],
-    page: 1,
-    isFetching: true,
-    finished: false 
-  }
+  const { session, memePostId } = state
 
-  const meme = getMemeById(state, cur_id)
-
+  const meme = getMemeById(state, memePostId) 
+  console.log('meme', meme)
   return {
-    selectedFilter,
     meme,
-    finished,
-    isFetching,
-    cur_id
+    memePostId
   }
 }
 

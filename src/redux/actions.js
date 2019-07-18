@@ -1,4 +1,5 @@
 import {  
+  SET_MEME,
   SET_MEMES,
   SET_UPLOAD_MEME,
   UPLOADING_MEME,
@@ -46,7 +47,7 @@ export function requestMemes(filter) {
 }
 
 export function requestMeme(id){
-  return { type: REQUEST_MEME, paylod: {id}}
+  return { type: REQUEST_MEME, paylod: { id }}
 }
 
 function receiveMemesError() {
@@ -54,11 +55,11 @@ function receiveMemesError() {
 }
 
 export function receiveMemes(json) {
-  return { type: RECEIVE_MEMES, payload: {json} }
+  return { type: RECEIVE_MEMES, payload: { json } }
 }
 
 export function receiveMeme(json){
-  return {type: RECEIVE_MEME, payload: {json}}
+  return {type: RECEIVE_MEME, payload: { json }}
 }
 
 export function receiveFilteredMemes(filter, ids) {
@@ -138,21 +139,20 @@ export function fetchMemes(filter) {
 }
 
 export function setMeme(id){
-  batch(dispatch(requestMeme(id)))
+  return { type: SET_MEME, payload: { id } }
 }
 
 export function fetchMeme() {
   return (dispatch, getState) => {
     const { apiUrl } = getEnvVars
-    const url = `${apiUrl}/memes/${getState().cur_id}`
+
+    const url = `${apiUrl}/memes/${getState().memePostId}`
     
     return fetch(url)
     .then(response => response.json())
     .then(json => {
-      batch(() => {
-        dispatch(receiveMeme(json))
-      }) 
-
+      console.log('fetchMeme' + json )
+      dispatch(receiveMeme(json))
       console.log('Finished fetching meme')
       return json
     })
