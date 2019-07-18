@@ -9,8 +9,6 @@ export const getMemesState = store => store.memes;
 //   getMemesState(store) ? getMemesState(store).allIds : []
 // }
 
-// export const getMemeById = (store, id) => 
-//   getMemesState(store) ? { ...getMemesState(store).byIds[id], id} : {}
 
 
 // export const getMemes = store => {
@@ -21,7 +19,10 @@ export const getMemesByIds = (store, ids) => {
   const memesState = getMemesState(store)
   let memes = []
   for (id of ids)
-    memes = [...memes, memesState.byIds[id]]
+    memes = [...memes, memesState.byIds[id].thumbnail]
 
   return memes
 }
+
+export const getMemeById = (store, id) => 
+  getMemesState(store) ? { ...getMemesState(store).byIds[id].img } : {}

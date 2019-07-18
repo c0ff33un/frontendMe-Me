@@ -1,13 +1,12 @@
 import React, { Fragment, Component } from "react";
 import { Image, Picker, Text, StyleSheet, View, FlatList, ActivityIndicator, Dimensions, Button } from "react-native";
-// import { connect } from "react-redux";
+import { batch, connect } from "react-redux";
 import getEnvVars from 'me-me/environment'
 // import {
-//   selectedFilter,
-//   fetchMemesIfNeeded,
 //   invalidateMemes,
 //   setMemeFilter,
-//   increaseMemesPageIfNeeded
+//   fetchMeme
+//   setMeme
 // } from '@redux/actions'
 // import { getMemesByFilter } from '@redux/selectors'
 // import { MEME_FILTERS } from '@redux/actionTypes'
@@ -39,10 +38,13 @@ class PostScreen extends Component {
   }
 
   componentDidMount = () =>{
-    const allIds = this.props.navigation.getParam('ids');
+    // if(!meme)
+    //   dispatch(fetchMeme(this.props.cur_id))
+
+    // const allIds = this.props.navigation.getParam('ids');
     
     const {apiUrl} =  getEnvVars
-    const url = `${apiUrl}/memes/${allIds[this.state.index]}`
+    const url = `${apiUrl}/memes/${this.props.cur_id}`
 
     fetch(url)
       .then(response => response.json())
@@ -50,14 +52,14 @@ class PostScreen extends Component {
         console.log(json.id, json.creator.handle, json.img, json.reaction_counts )
         const meme_id = json.id, 
         handle = json.creator.handle, 
-        img = json.img, 
+        // img = json.img, 
         reactions = json.reaction_counts, 
         avatar = json.creator.avatar
         
         this.setState({
           meme_id,
           handle,
-          img,
+          // img,
           reactions,
           avatar
         })
@@ -98,7 +100,7 @@ class PostScreen extends Component {
         </View>
         <Image 
           style={styles.image}
-          source={{uri: this.state.img}}/>
+          source={{uri: this.props.meme}}/>
 
         <View style={styles.reactions}>
           <View style={styles.reaction}>
@@ -124,6 +126,29 @@ class PostScreen extends Component {
         </View>
       </Fragment>
     );
+  }
+}
+
+function mapStateToProps(state) {
+  // 👌
+  const { selectedFilter, memesByFilter, session, cur_id } = state
+  const { allIds, isFetching, page, finished } = memesByFilter[
+    selectedFilter
+  ] || {
+    allIds: [],
+    page: 1,
+    isFetching: true,
+    finished: false 
+  }
+
+  const meme = getMemeById(state, cur_id)
+
+  return {
+    selectedFilter,
+    meme,
+    finished,
+    isFetching,
+    cur_id
   }
 }
 
@@ -187,4 +212,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default PostScreen;
+export default  connect(mapStateToProps)(PostScreen);

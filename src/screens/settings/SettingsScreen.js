@@ -13,6 +13,9 @@ import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
 import { logout } from "@redux/actions";
 import PureChart from "react-native-pure-chart";
+import * as FileSystem from 'expo-file-system';
+import { Linking } from 'react-native';
+import * as IntentLauncher from 'expo-intent-launcher';
 
 import {
   LineChart,
@@ -37,6 +40,31 @@ class SettingsScreen extends Component {
 
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
+  }
+
+  downloadStats(){
+    const {apiUrl} = getEnvVars
+    const jwt = this.props.jwt;
+    const options = {
+      headers: {
+        Authorization: jwt,
+        Accept: "*/*",
+      }
+    }
+
+    FileSystem.downloadAsync(
+      `${apiUrl}/user/certificate`,
+      `${FileSystem.documentDirectory}certificate.pdf`,
+      options
+    )
+      .then((result) => {
+        console.log(result)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+      
   }
 
   makeRemoteRequest = () => {
@@ -157,6 +185,14 @@ class SettingsScreen extends Component {
               color="#F6BD60"
               size={20}
               onPress={() => this.setModalVisible(true)}
+            />
+            <Icon
+              reverse
+              name="md-document"
+              type="ionicon"
+              color="#F6BD60"
+              size={20}
+              onPress={() => {this.downloadStats()}}
             />
           </View>
         </View>

@@ -15,7 +15,8 @@ import {
   VALIDATE_EMAIL,
   RECEIVE_JWT_ERROR,
   LOGOUT,
-  SET_FINISHED
+  SET_FINISHED,
+  RECEIVE_MEME
 } from './actionTypes'
 import getEnvVars from 'me-me/environment'
 import { batch } from 'react-redux'
@@ -44,12 +45,20 @@ export function requestMemes(filter) {
   return { type: REQUEST_MEMES, payload: {filter} }
 }
 
+export function requestMeme(id){
+  return { type: REQUEST_MEME, paylod: {id}}
+}
+
 function receiveMemesError() {
   return { type: RECEIVE_MEMES_ERROR }
 }
 
 export function receiveMemes(json) {
   return { type: RECEIVE_MEMES, payload: {json} }
+}
+
+export function receiveMeme(json){
+  return {type: RECEIVE_MEME, payload: {json}}
 }
 
 export function receiveFilteredMemes(filter, ids) {
@@ -123,6 +132,32 @@ export function fetchMemes(filter) {
     .catch( error => {
       console.log('Infinite Scroll error', error)
       dispatch(receiveMemesError(filter))
+      return error;
+    });
+  }
+}
+
+export function setMeme(id){
+  batch(dispatch(requestMeme(id)))
+}
+
+export function fetchMeme() {
+  return (dispatch, getState) => {
+    const { apiUrl } = getEnvVars
+    const url = `${apiUrl}/memes/${getState().cur_id}`
+    
+    return fetch(url)
+    .then(response => response.json())
+    .then(json => {
+      batch(() => {
+        dispatch(receiveMeme(json))
+      }) 
+
+      console.log('Finished fetching meme')
+      return json
+    })
+    .catch( error => {
+      console.log('Problem fetching meme', error)
       return error;
     });
   }

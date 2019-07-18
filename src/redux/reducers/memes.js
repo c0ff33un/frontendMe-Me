@@ -4,7 +4,9 @@ import {
   MEME_FILTERS,
   INVALIDATE_MEMES,
   REQUEST_MEMES,
+  REQUEST_MEME,
   RECEIVE_MEMES,
+  RECEIVE_MEME,
   RECEIVE_FILTERED_MEMES,
   RECEIVE_MEMES_ERROR,
   INCREASE_MEMES_PAGE,
@@ -34,6 +36,7 @@ function memes_(
         allIds: []
       });
     case REQUEST_MEMES:
+    case REQUEST_MEME:
       return Object.assign({}, state, {
         isFetching: true,
         didInvalidate: false
@@ -77,25 +80,30 @@ export function memesByFilter(state = {}, action) {
       return Object.assign({}, state, {
         [filter]: memes_(state[filter], action)
       });
-    default:
-      return state;
-  }
-}
-
-export function commentsById(state = {}, action) {
-    switch (action.type) {
-    case INVALIDATE_MEMES:
-    case RECEIVE_FILTERED_MEMES:
-    case INCREASE_MEMES_PAGE:
-    case REQUEST_MEMES:
-      const { id } = action.payload;
+    case REQUEST_MEME:
+      const {id} = action.payload;
       return Object.assign({}, state, {
-        [id]: memes_(state[filter], action)
+        cur_id: id
       });
     default:
       return state;
   }
 }
+
+// export function commentsById(state = {}, action) {
+//     switch (action.type) {
+//     case INVALIDATE_MEMES:
+//     case RECEIVE_FILTERED_MEMES:
+//     case INCREASE_MEMES_PAGE:
+//     case REQUEST_MEMES:
+//       const { id } = action.payload;
+//       return Object.assign({}, state, {
+//         [id]: memes_(state[filter], action)
+//       });
+//     default:
+//       return state;
+//   }
+// }
 
 export function selectedFilter(state = "best", action) {
   switch (action.type) {
@@ -110,22 +118,37 @@ export function memes(state = {
   allIds: [],
   byIds: {}
 }, action) {
+  if(typeof(action) !== "undefined"){
+    const { json } = action.payload
+    let { allIds, byIds } = state
+  }
   switch (action.type) {
     case RECEIVE_MEMES:
-      const { json } = action.payload
-      let { allIds, byIds } = state
       for (key in Object.keys(json)) {
         meme = json[key]
+        byIds[meme.id] = {}
+
         if ( state.byIds[meme] ) {
-          byIds[meme.id] = meme.thumbnail
+          byIds[meme.id].thumbnail = meme.thumbnail
         } else {
           allIds.push(meme.id)
-          byIds[meme.id] = meme.thumbnail
+          byIds[meme.id].thumbnail = meme.thumbnail
         }
       }
       return Object.assign({}, state, {
         allIds, byIds
       })
+      break;
+    case RECEIVE_MEME:
+      // const { json } = action.payload
+      // let { byIds } = state
+      byIds[action.payload.id].img = action.payload.img;
+      let cur_id = json.id;
+
+      return Object.assign({}, state, {
+        byIds,cur_id
+      })
+      break;
     default:
       return state;
   }
